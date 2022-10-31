@@ -1,0 +1,66 @@
+.max-container1 {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: space-between;
+}
+
+.max-container2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.grid-container {
+    width: 100%;
+    display: flex;
+}
+
+.sidebar-container {
+    width: 25%;
+}
+
+.main-grid {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+.card-container {
+    width: 30%;
+    min-height: 30vh;
+    border:1px black solid;
+    border-radius: 7px;
+    padding: 5px;
+    margin:1%;
+}
+
+.card-income-container {
+    min-height: 30vh;
+    border:1px black solid;
+    border-radius: 7px;
+    padding: 5px;
+    margin:1%;
+}
+
+.card-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.paid {
+    background-color: #74a077;
+}
+
+.not-paid {
+    background-color: #ee3838;
+}
+
+.income-columns {
+    display: flex;
+}
+
+.income-rows {
+    padding-left: 10px;
+}
