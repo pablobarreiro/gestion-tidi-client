@@ -64,3 +64,11 @@
 .income-rows {
     padding-left: 10px;
 }
+
+.main-button {
+    background-color: #999999;
+    border-width: 0px;
+    border-radius: 1000px;
+    padding: 2px 15px;
+    font-family: Arial;
+}
