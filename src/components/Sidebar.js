@@ -1,22 +1,26 @@
+import { useEffect } from "react";
+import { useLocation } from 'react-router-dom'
 
 const projectData = {
   project_number: 334,
-  initial_date: new Date(1/4/2022),
-  name: 'Carlitos',
-  phone: '44878824',
-  direction: 'Calle falsa 123',
-  email: 'carlitos@gmail.com',
-  salesman: 'Juan',
+  initial_date: new Date(1 / 4 / 2022),
+  name: "Carlitos",
+  phone: "44878824",
+  direction: "Calle falsa 123",
+  email: "carlitos@gmail.com",
+  salesman: "Juan",
   sale_assistant: "Pedro",
-  branch_office: 'Martinez',
+  branch_office: "Martinez",
   payment_fulfilled: false,
-  internal_state: 'Medicion'
-}
-
+  internal_state: "Medicion",
+};
 
 const Sidebar = () => {
+  const URL = useLocation().pathname
+  console.log(URL)
+
   return (
-    <div className='sidebar-container'>
+    <div className="sidebar-container">
       <h3>TM-{projectData.project_number}</h3>
       <p>Cliente: {projectData.name}</p>
       <p>Telefono: {projectData.phone}</p>

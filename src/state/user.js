@@ -13,7 +13,7 @@ export const userRegister = createAsyncThunk("USER_REGISTER", async (registerVal
 export const userLogin = createAsyncThunk("USER_LOGIN", async (loginValues) => {
   try {
     const user = await axios.post(loginRoute(), loginValues)
-    localStorage.setItem("user", JSON.stringify(user.data));
+    localStorage.setItem("user_values", JSON.stringify(user.data));
     return user.data
   } catch (err) {
     console.log(err)
@@ -22,7 +22,8 @@ export const userLogin = createAsyncThunk("USER_LOGIN", async (loginValues) => {
 
 export const getUser = createAsyncThunk("GET_USER", async () => {
   try {
-    const user = await axios.get(persistRoute())
+    let user = null
+    if(localStorage.getItem("user_values")) user = JSON.parse(localStorage.getItem("user_values"))
     return user.data
   } catch (err) {
     console.log(err)

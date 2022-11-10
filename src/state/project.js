@@ -12,7 +12,7 @@ export const getProject = createAsyncThunk("GET_PROJECT", async (projectNumber) 
   }
 })
 
-export const createProject = createAsyncThunk("CREATE_PROJECT", async() => {
+export const createProject = createAsyncThunk("CREATE_PROJECT", async () => {
   try {
     await axios.post(createProjectRoute())
   } catch (err) {
@@ -20,7 +20,7 @@ export const createProject = createAsyncThunk("CREATE_PROJECT", async() => {
   }
 })
 
-export const editProject = createAsyncThunk("EDIT_PROJECT", async() => {
+export const editProject = createAsyncThunk("EDIT_PROJECT", async () => {
   try {
     await axios.put(editProjectRoute())
   } catch (err) {
@@ -28,8 +28,8 @@ export const editProject = createAsyncThunk("EDIT_PROJECT", async() => {
   }
 })
 
-const projectReducer = createReducer(null, {
-  [getProject.fulfilled]: (state, action) => action.payload,
+const projectReducer = createReducer(null, (builder)=> {
+  builder.addCase(getProject.fulfilled, (state, action) => action.payload)
 });
 
 export default projectReducer;

@@ -1,5 +1,5 @@
 import Card from "./Card";
-import Sidebar from "./Sidebar";
+import Sidebar from "../components/Sidebar";
 import IncomeCard from "../components/IncomeCard";
 
 const Grid = ({ categories, incomeData }) => {
