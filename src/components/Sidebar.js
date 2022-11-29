@@ -12,10 +12,12 @@ const Sidebar = () => {
   const URL = useLocation().pathname
   const selectedProject = useSelector(state => state.project)
 
+  const allProjects = useSelector(state => state.allProjects)
+
   if(URL === '/general') return (
     <div>
       <h3>Lista de proyectos</h3>
-      {projectList.map((project, i) => {
+      {allProjects && allProjects.map((project, i) => {
         return <p key={i}>TM-{project.id} - {project.name} <button className='main-button' onClick={()=>{navigate(`/project/${project.id}`)}}>Ver</button></p>
       })}
     </div>

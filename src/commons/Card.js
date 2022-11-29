@@ -21,7 +21,7 @@ const Card = ({
         <h2>{title}</h2>
         <p>total: {showCollocation? 'USD': '$'} {total}</p>
         <p>ajuste: {showCollocation? 'USD': '$'} {adjust}</p>
-        <p>saldo: {showCollocation? 'USD': '$'} {remaining}</p>
+        <p className={!remaining ? "paid": "not-paid"}>saldo: {showCollocation? 'USD': '$'} {remaining}</p>
         {showTransport && <p className={shipping_paid ? "paid" : "not-paid"}>envio: $ {shipping_total}</p>}
         {showInstalation && <p className={placement_paid ? "paid" : "not-paid"}>instalacion: $ {placement_total}</p>}
         {showCollocation && <p className={placement_paid ? "paid" : "not-paid"}>colocacion: $ {placement_total}</p>}

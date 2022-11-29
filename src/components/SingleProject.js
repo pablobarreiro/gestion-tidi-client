@@ -17,62 +17,117 @@ const SingleProject = () => {
   const project = useSelector((state) => state.project);
   const user = useSelector((state) => state.user);
 
+  const showStates = {
+    payCarp: "Carpinteria - Pagar parciales",
+    loadCarp: "Carpinteria - Cargar Total/Ajustes",
+    detailsCarp: "Carpinteria - Detalles",
+    payIron: "Herrajes - Pagar parciales",
+    loadIron: "Herrajes - Cargar Total/Ajustes",
+    detailsIron: "Herrajes - Detalles",
+    payLights: "Iluminacion - Pagar parciales",
+    loadLights: "Iluminacion - Cargar Total/Ajustes",
+    detailsLights: "Iluminacion - Detalles",
+    payMarble: "Marmol - Pagar parciales",
+    loadMarble: "Marmol - Cargar Total/Ajustes",
+    detailsMarble: "Marmol - Detalles",
+  };
+
+  // console.log("SELECTED PROJECT", project);
   useEffect(() => {
     if (!user) navigate("/login");
   }, []);
 
   useEffect(() => {
-    dispatch(getProject(projectId)).then(() => {});
+    dispatch(getProject(projectId));
   }, [projectId]);
 
-  const categories = !project ? []  : [
-    {
-      title: "Carpinteria",
-      ...project.carpentry_general,
-      outcomes: project.carpentry_outcomes,
-      remaining: project.carpentry_general.total + project.carpentry_general.adjust - project.carpentry_outcomes.reduce((ac, cv) => ac + cv.amount, 0),
-      payOnClick: () => setShowPay("Carpinteria - Pagar parciales"),
-      loadOnClick: () => setShowLoad("Carpinteria - Cargar Total/Ajustes"),
-      detailsOnClick: () => setShowDetails("Carpinteria - Detalles"),
-    },
-    {
-      title: "Herrajes",
-      ...project.iron_working_general,
-      outcomes: project.iron_working_outcomes,
-      remaining: project.iron_working_general.total + project.iron_working_general.adjust - project.iron_working_outcomes.reduce((ac, cv) => (cv.paid ? ac + cv.amount : ac + 0), 0),
-      payOnClick: () => setShowPay("Herrajes - Pagar Facturas"),
-      loadOnClick: () => setShowLoad("Herrajes - Cargar Facturas"),
-      detailsOnClick: () => setShowDetails("Herrajes - Detalles"),
-    },
-    {
-      title: "Iluminacion",
-      ...project.light_general,
-      outcomes: project.light_outcomes,
-      remaining: project.light_general.total + project.light_general.adjust - project.light_outcomes.reduce((ac, cv) => (cv.paid ? ac + cv.amount : ac + 0), 0),
-      payOnClick: () => setShowPay("Iluminacion - Pagar Pedidos"),
-      loadOnClick: () => setShowLoad("Iluminacion - Cargar Pedidos"),
-      detailsOnClick: () => setShowDetails("Iluminacion - Detalles"),
-    },
-    {
-      title: "Marmol",
-      ...project.marble_general,
-      outcomes: project.marble_outcomes,
-      remaining: project.marble_general.total + project.marble_general.adjust - project.marble_outcomes.reduce((ac, cv) => ac + cv.amount, 0),
-      payOnClick: () => setShowPay("Marmol - Pagar parciales"),
-      loadOnClick: () => setShowLoad("Marmol - Cargar Total / Ajuste"),
-      detailsOnClick: () => setShowDetails("Marmol - Detalles"),
-    },
-  ];
+  const categories = !project
+    ? []
+    : [
+        {
+          title: "Carpinteria",
+          ...project.carpentry_general,
+          outcomes: project.carpentry_outcomes,
+          remaining:
+            project.carpentry_general.total +
+            project.carpentry_general.adjust -
+            project.carpentry_outcomes.reduce((ac, cv) => ac + cv.amount, 0),
+          payOnClick: () => setShowPay(showStates.payCarp),
+          loadOnClick: () => setShowLoad(showStates.loadCarp),
+          detailsOnClick: () => setShowDetails(showStates.detailsCarp),
+        },
+        {
+          title: "Herrajes",
+          ...project.iron_working_general,
+          outcomes: project.iron_working_outcomes,
+          total: project.iron_working_outcomes.reduce(
+            (ac, cv) => (cv.amount ? ac + cv.amount : ac + 0),
+            0
+          ),
+          remaining:
+            project.iron_working_outcomes.reduce(
+              (ac, cv) => (cv.amount ? ac + cv.amount : ac + 0),
+              0
+            ) +
+            project.iron_working_general.adjust -
+            project.iron_working_outcomes.reduce(
+              (ac, cv) => (cv.paid ? ac + cv.amount : ac + 0),
+              0
+            ),
+          payOnClick: () => setShowPay(showStates.payIron),
+          loadOnClick: () => setShowLoad(showStates.loadIron),
+          detailsOnClick: () => setShowDetails(showStates.detailsIron),
+        },
+        {
+          title: "Iluminacion",
+          ...project.light_general,
+          outcomes: project.light_outcomes,
+          total: project.light_outcomes.reduce(
+            (ac, cv) => (cv.amount ? ac + cv.amount : ac + 0),
+            0
+          ),
+          remaining:
+            project.light_outcomes.reduce(
+              (ac, cv) => (cv.amount ? ac + cv.amount : ac + 0),
+              0
+            ) +
+            project.light_general.adjust -
+            project.light_outcomes.reduce(
+              (ac, cv) => (cv.paid ? ac + cv.amount : ac + 0),
+              0
+            ),
+          payOnClick: () => setShowPay(showStates.payLights),
+          loadOnClick: () => setShowLoad(showStates.loadLights),
+          detailsOnClick: () => setShowDetails(showStates.detailsLights),
+        },
+        {
+          title: "Marmol",
+          ...project.marble_general,
+          outcomes: project.marble_outcomes,
+          remaining:
+            project.marble_general.total +
+            project.marble_general.adjust -
+            project.marble_outcomes.reduce((ac, cv) => ac + cv.amount, 0),
+          payOnClick: () => setShowPay(showStates.payMarble),
+          loadOnClick: () => setShowLoad(showStates.loadMarble),
+          detailsOnClick: () => setShowDetails(showStates.detailsMarble),
+        },
+      ];
 
-  const incomeData = !project ? {} : {
-    ...project.income_total,
-    payments: project.income_partials,
-    remaining: project.income_total.total + project.income_total.adjust - project.income_partials.reduce((ac, cv) => ac + cv.amount, 0),
-      
-    loadOnClick: () => setShowLoad("Ingresos - Cargar Total/Ajustes"),
-    payOnClick: () => setShowPay("Ingresos - Cobros parciales"),
-    detailsOnClick: () => setShowDetails("Ingresos - Detalles"),
-  };
+  const incomeData = !project
+    ? {}
+    : {
+        ...project.income_total,
+        payments: project.income_partials,
+        remaining:
+          project.income_total.total +
+          project.income_total.adjust -
+          project.income_partials.reduce((ac, cv) => ac + cv.amount, 0),
+
+        loadOnClick: () => setShowLoad("Ingresos - Cargar Total/Ajustes"),
+        payOnClick: () => setShowPay("Ingresos - Cobros parciales"),
+        detailsOnClick: () => setShowDetails("Ingresos - Detalles"),
+      };
 
   const closeModal = () => {
     setShowPay(false);

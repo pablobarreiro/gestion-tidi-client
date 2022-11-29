@@ -9,20 +9,28 @@ const Home = () => {
   const dispatch = useDispatch();
   const allProjects = useSelector(state => state.allProjects)
 
-  console.log(allProjects)
+  console.log("ALL PROJECTS",allProjects)
   useEffect(()=> {
     dispatch(getAllProjects())
   },[])
 
+  const allCarpentry = {
+    total: allProjects.reduce((acum, project) =>  acum + project.carpentry_general.total, 0),
+    adjust: allProjects.reduce((acum, project) =>  acum + project.carpentry_general.adjust, 0),
+    shipping_total: allProjects.reduce((acum, project) =>  project.carpentry_general.shipping_paid ? acum : acum + project.carpentry_general.shipping_total, 0),
+    placement_total: allProjects.reduce((acum, project) => project.carpentry_general.placement_paid ? acum : acum + project.carpentry_general.placement_total, 0),
+    shipping_paid: allProjects.every(project =>  project.carpentry_general.shipping_paid),
+    placement_paid: allProjects.every(project =>  project.carpentry_general.placement_paid),
+    }
+
   const categories = [
     {
       title: "Carpinteria",
-      total: 1000,
-      adjust: 200,
-      shipping_total: 35,
-      placement_total: 30,
-      shipping_paid: true,
-      placement_paid: false,
+      ...allCarpentry,
+      remaining:
+            allCarpentry.total +
+            allCarpentry.adjust -
+            allProjects.reduce((acum,project) => project.carpentry_outcomes.reduce((acum2,outcome) => acum2+outcome.amount, 0)+acum,0 ),
       payOnClick: () => setShow("carpentryPay"),
       loadOnClick: () => setShow("carpentryLoad"),
       detailsOnClick: () => setShow("carpentryDetails"),
