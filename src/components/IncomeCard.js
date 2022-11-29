@@ -2,12 +2,12 @@ const IncomeCard = ({
   total,
   adjust,
   payments,
+  remaining,
   loadOnClick,
   payOnClick,
   detailsOnClick,
 }) => {
-  const remaining = payments ? payments.reduce((ac, cv) => ac + cv.amount, 0) : 0;
-
+  
   return (
     <>
       <div className="card-income-container">

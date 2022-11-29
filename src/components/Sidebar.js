@@ -15,7 +15,7 @@ const Sidebar = () => {
   const allProjects = useSelector(state => state.allProjects)
 
   if(URL === '/general') return (
-    <div>
+    <div className="sidebar-container">
       <h3>Lista de proyectos</h3>
       {allProjects && allProjects.map((project, i) => {
         return <p key={i}>TM-{project.id} - {project.name} <button className='main-button' onClick={()=>{navigate(`/project/${project.id}`)}}>Ver</button></p>

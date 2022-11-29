@@ -9,12 +9,12 @@ const Home = () => {
   const dispatch = useDispatch();
   const allProjects = useSelector(state => state.allProjects)
 
-  console.log("ALL PROJECTS",allProjects)
+  // console.log("ALL PROJECTS",allProjects)
   useEffect(()=> {
     dispatch(getAllProjects())
   },[])
 
-  const allCarpentry = {
+  const allCarpentry = !allProjects ? {} : {
     total: allProjects.reduce((acum, project) =>  acum + project.carpentry_general.total, 0),
     adjust: allProjects.reduce((acum, project) =>  acum + project.carpentry_general.adjust, 0),
     shipping_total: allProjects.reduce((acum, project) =>  project.carpentry_general.shipping_paid ? acum : acum + project.carpentry_general.shipping_total, 0),
@@ -27,7 +27,7 @@ const Home = () => {
     {
       title: "Carpinteria",
       ...allCarpentry,
-      remaining:
+      remaining: !allProjects ? 0 :
             allCarpentry.total +
             allCarpentry.adjust -
             allProjects.reduce((acum,project) => project.carpentry_outcomes.reduce((acum2,outcome) => acum2+outcome.amount, 0)+acum,0 ),
@@ -84,19 +84,7 @@ const Home = () => {
   return (
     <>
       <Grid categories={categories} incomeData={incomeData} />
-      <Modal show={show === "carpentryPay"} onHide={closeModal} centered>
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Modal heading
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <h4>Modal Body</h4>
-        </Modal.Body>
-        <Modal.Footer>
-          <button onClick={closeModal}>Close</button>
-        </Modal.Footer>
-      </Modal>
+     
     </>
   );
 };

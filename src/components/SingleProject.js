@@ -10,9 +10,9 @@ import DetailsModal from "../commons/DetailsModal";
 const SingleProject = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [showLoad, setShowLoad] = useState(false);
-  const [showPay, setShowPay] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  const [showLoad, setShowLoad] = useState("");
+  const [showPay, setShowPay] = useState("");
+  const [showDetails, setShowDetails] = useState("");
   const { projectId } = useParams();
   const project = useSelector((state) => state.project);
   const user = useSelector((state) => state.user);
@@ -32,7 +32,7 @@ const SingleProject = () => {
     detailsMarble: "Marmol - Detalles",
   };
 
-  // console.log("SELECTED PROJECT", project);
+  console.log("SELECTED PROJECT", project);
   useEffect(() => {
     if (!user) navigate("/login");
   }, []);
@@ -40,6 +40,34 @@ const SingleProject = () => {
   useEffect(() => {
     dispatch(getProject(projectId));
   }, [projectId]);
+
+  const [detailsInfo, setDetailsInfo] = useState([]);
+  const [detailsHeadlines, setDetailsHeadlines] = useState([]);
+  useEffect(() => {
+    const cat = showDetails.slice(0, 3);
+    switch (cat) {
+      case "Car":
+        setDetailsInfo(project.carpentry_outcomes);
+        setDetailsHeadlines(["Fecha", "Monto", "nro Seguimiento"]);
+        break;
+      case "Her":
+        setDetailsInfo(project.iron_working_outcomes);
+        setDetailsHeadlines(["Fecha","Monto","nro Factura","Fecha Factura","Estado",]);
+        break;
+      case "Ilu":
+        setDetailsInfo(project.light_outcomes);
+        setDetailsHeadlines(["Fecha", "Monto", "Estado"]);
+        break;
+      case "Mar":
+        setDetailsInfo(project.marble_outcomes);
+        setDetailsHeadlines(["Fecha", "Monto"]);
+        break;
+      default:
+        setDetailsInfo([]);
+        setDetailsHeadlines([]);
+        break;
+    }
+  }, [showDetails]);
 
   const categories = !project
     ? []
@@ -130,9 +158,9 @@ const SingleProject = () => {
       };
 
   const closeModal = () => {
-    setShowPay(false);
-    setShowLoad(false);
-    setShowDetails(false);
+    setShowPay("");
+    setShowLoad("");
+    setShowDetails("");
   };
 
   return (
@@ -140,7 +168,12 @@ const SingleProject = () => {
       <Grid categories={categories} incomeData={incomeData} />
       <LoadModal show={showLoad} closeModal={closeModal} />
       <PayModal show={showPay} closeModal={closeModal} />
-      <DetailsModal show={showDetails} closeModal={closeModal} />
+      <DetailsModal
+        show={showDetails}
+        closeModal={closeModal}
+        headlines={detailsHeadlines}
+        detailsInfo={detailsInfo}
+      />
     </>
   );
 };
