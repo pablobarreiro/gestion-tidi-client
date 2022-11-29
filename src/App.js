@@ -9,37 +9,34 @@ import Login from "./components/Login";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "./state/user";
+import SingleProject from "./components/SingleProject";
+
 
 function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
+  console.log("USER",user)
 
   useEffect(() => {
-    if (localStorage.getItem('user_values')) {
-      dispatch(getUser());
-      navigate("/general");
-    }
-    else navigate("/login");
+    dispatch(getUser())
+    .then(user => {
+      if (user) {
+        navigate("/general");
+      }
+      else navigate("/login");
+    })
   }, []);
-  console.log(user)
-
-  if (!localStorage.getItem('user_values'))
-    return (
-      <>
-        <Login />
-      </>
-    );
 
   return (
     <>
       <div className="max-container1">
         <div className="max-container2">
-          <NavigationBar />
+          { <NavigationBar /> }
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/general" element={<Home />} />
-            <Route path="/project/:projectName" element={<Home />} />
+            <Route path="/project/:projectId" element={<SingleProject />} />
             <Route path="/*" element={<NotFound />} />
           </Routes>
         </div>

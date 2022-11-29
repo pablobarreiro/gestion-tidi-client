@@ -1,16 +1,17 @@
 import { createAsyncThunk, createReducer } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getProjectRoute, createProjectRoute, editProjectRoute } from "../uris";
+import { getProjectRoute, getAllProjectsRoute, createProjectRoute, editProjectRoute } from "../uris";
 
 
-export const getProject = createAsyncThunk("GET_PROJECT", async (projectNumber) => {
+export const getProject = createAsyncThunk("GET_PROJECT", async (projectId) => {
   try {
-    const project = await axios.get(getProjectRoute(projectNumber))
+    const project = await axios.get(getProjectRoute(projectId))
     return project.data
   } catch (err) {
     console.log(err)
   }
 })
+
 
 export const createProject = createAsyncThunk("CREATE_PROJECT", async () => {
   try {

@@ -1,9 +1,19 @@
 import Grid from "../commons/Grid";
 import Modal from "react-bootstrap/Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProjects } from "../state/allProjects";
 
 const Home = () => {
   const [show, setShow] = useState(false);
+  const dispatch = useDispatch();
+  const allProjects = useSelector(state => state.allProjects)
+
+  console.log(allProjects)
+  useEffect(()=> {
+    dispatch(getAllProjects())
+  },[])
+
   const categories = [
     {
       title: "Carpinteria",
@@ -42,14 +52,15 @@ const Home = () => {
     adjust: 2000,
     payments: [
       {
-        project_number: "334",
+        projectId: "334",
         amount: 40000 * 0.6,
-        pay_date: '4/5/2022',
+        pay_date: "4/5/2022",
         payment_method: "Efectivo",
-      },{
-        project_number: "334",
+      },
+      {
+        projectId: "334",
         amount: 40000 * 0.3,
-        pay_date: '4/8/2022',
+        pay_date: "4/8/2022",
         payment_method: "Transferencia",
       },
     ],

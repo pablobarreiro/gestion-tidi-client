@@ -22,8 +22,8 @@ export const userLogin = createAsyncThunk("USER_LOGIN", async (loginValues) => {
 
 export const getUser = createAsyncThunk("GET_USER", async () => {
   try {
-    let user = null
-    if(localStorage.getItem("user_values")) user = JSON.parse(localStorage.getItem("user_values"))
+    const user = await axios.get(persistRoute())
+    console.log("STATE USER",user)
     return user.data
   } catch (err) {
     console.log(err)

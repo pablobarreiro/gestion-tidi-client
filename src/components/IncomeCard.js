@@ -6,9 +6,7 @@ const IncomeCard = ({
   payOnClick,
   detailsOnClick,
 }) => {
-  // console.log(payments)
-  // const remaining = payments.reduce((pv,cv) => pv.amount+cv)
-  const remaining = 0;
+  const remaining = payments ? payments.reduce((ac, cv) => ac + cv.amount, 0) : 0;
 
   return (
     <>
@@ -25,17 +23,24 @@ const IncomeCard = ({
           </div>
           <div className="income-rows">
             <p>Pagos cobrados</p>
-            {payments.map((pay, i) => (
-              <p key={i}>
-                {pay.pay_date} - ${pay.amount} {`(${pay.payment_method})`}
-              </p>
-            ))}
+            {payments &&
+              payments.map((pay, i) => (
+                <p key={i}>
+                  {pay.pay_date} - ${pay.amount} {`(${pay.payment_method})`}
+                </p>
+              ))}
           </div>
         </div>
         <div className="card-buttons">
-          <button className="main-button" onClick={loadOnClick}>cargar</button>
-          <button className="main-button" onClick={payOnClick}>pagar</button>
-          <button className="main-button" onClick={detailsOnClick}>ver detalles</button>
+          <button className="main-button" onClick={loadOnClick}>
+            cargar
+          </button>
+          <button className="main-button" onClick={payOnClick}>
+            pagar
+          </button>
+          <button className="main-button" onClick={detailsOnClick}>
+            ver detalles
+          </button>
         </div>
       </div>
     </>

@@ -16,7 +16,7 @@ const NavigationBar = () => {
     <>
       <h4 style={{display:'flex', justifyContent:'space-between',padding:'5px 5px 0px 5px'}}>
         <div>
-          Navbar <button className='main-button'>Inicio</button>{' '}
+          Navbar <button className='main-button' onClick={()=> navigate('/general')}>Inicio</button>{' '}
         </div>
         <div>
           <button className='main-button'>Reportes</button>{' '}
