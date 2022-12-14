@@ -26,9 +26,9 @@ const Card = ({
         {showInstalation && <p className={placement_paid ? "paid" : "not-paid"}>instalacion: $ {placement_total}</p>}
         {showCollocation && <p className={placement_paid ? "paid" : "not-paid"}>colocacion: $ {placement_total}</p>}
         <div className="card-buttons">
-          <button className="main-button" onClick={loadOnClick}>cargar</button>
-          <button className="main-button" onClick={payOnClick}>pagar</button>
-          <button className="main-button" onClick={detailsOnClick}>ver detalles</button>
+          {loadOnClick && <button className="main-button" onClick={loadOnClick}>cargar</button>}
+          {payOnClick && <button className="main-button" onClick={payOnClick}>pagar</button>}
+          {detailsOnClick && <button className="main-button" onClick={detailsOnClick}>ver detalles</button>}
         </div>
       </div>
     </>

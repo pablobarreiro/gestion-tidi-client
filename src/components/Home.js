@@ -21,7 +21,7 @@ const Home = () => {
     placement_total: allProjects.reduce((acum, project) => project.carpentry_general.placement_paid ? acum : acum + project.carpentry_general.placement_total, 0),
     shipping_paid: allProjects.every(project =>  project.carpentry_general.shipping_paid),
     placement_paid: allProjects.every(project =>  project.carpentry_general.placement_paid),
-    }
+  }
 
   const categories = [
     {
@@ -31,26 +31,26 @@ const Home = () => {
             allCarpentry.total +
             allCarpentry.adjust -
             allProjects.reduce((acum,project) => project.carpentry_outcomes.reduce((acum2,outcome) => acum2+outcome.amount, 0)+acum,0 ),
-      payOnClick: () => setShow("carpentryPay"),
-      loadOnClick: () => setShow("carpentryLoad"),
+      // payOnClick: () => setShow("carpentryPay"),
+      // loadOnClick: () => setShow("carpentryLoad"),
       detailsOnClick: () => setShow("carpentryDetails"),
     },
     {
       title: "Herrajes",
-      payOnClick: () => setShow("ironWorkingPay"),
-      loadOnClick: () => setShow("ironWorkingLoad"),
+      // payOnClick: () => setShow("ironWorkingPay"),
+      // loadOnClick: () => setShow("ironWorkingLoad"),
       detailsOnClick: () => setShow("ironWorkingDetails"),
     },
     {
       title: "Iluminacion",
-      payOnClick: () => setShow("lightsPay"),
-      loadOnClick: () => setShow("lightsLoad"),
+      // payOnClick: () => setShow("lightsPay"),
+      // loadOnClick: () => setShow("lightsLoad"),
       detailsOnClick: () => setShow("lightsDetails"),
     },
     {
       title: "Marmol",
-      payOnClick: () => setShow("marblePay"),
-      loadOnClick: () => setShow("marbleLoad"),
+      // payOnClick: () => setShow("marblePay"),
+      // loadOnClick: () => setShow("marbleLoad"),
       detailsOnClick: () => setShow("marbleDetails"),
     },
   ];
@@ -72,8 +72,8 @@ const Home = () => {
         payment_method: "Transferencia",
       },
     ],
-    loadOnClick: () => setShow("incomeLoad"),
-    payOnClick: () => setShow("incomeCollect"),
+    // loadOnClick: () => setShow("incomeLoad"),
+    // payOnClick: () => setShow("incomeCollect"),
     detailsOnClick: () => setShow("incomeDetails"),
   };
 

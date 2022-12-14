@@ -6,6 +6,10 @@ import { getProject } from "../state/project";
 import PayModal from "../commons/LoadModal";
 import LoadModal from "../commons/LoadModal";
 import DetailsModal from "../commons/DetailsModal";
+import CarpentryLoadModal from "./CarpentryLoadModal";
+import IronWorkingLoadModal from "./IronWorkingLoadModal";
+import LightLoadModal from "./LightLoadModal";
+import MarbleLoadModal from "./MarbleLoadModal";
 
 const SingleProject = () => {
   const navigate = useNavigate();
@@ -22,20 +26,19 @@ const SingleProject = () => {
     loadCarp: "Carpinteria - Cargar Total/Ajustes",
     detailsCarp: "Carpinteria - Detalles",
     payIron: "Herrajes - Pagar parciales",
-    loadIron: "Herrajes - Cargar Total/Ajustes",
+    loadIron: "Herrajes - Cargar Factura/Modificar Ajustes",
     detailsIron: "Herrajes - Detalles",
     payLights: "Iluminacion - Pagar parciales",
-    loadLights: "Iluminacion - Cargar Total/Ajustes",
+    loadLights: "Iluminacion - Cargar Pedido/Modificar Ajustes",
     detailsLights: "Iluminacion - Detalles",
     payMarble: "Marmol - Pagar parciales",
     loadMarble: "Marmol - Cargar Total/Ajustes",
     detailsMarble: "Marmol - Detalles",
   };
-
-  console.log("SELECTED PROJECT", project);
+  // console.log("SELECTED PROJECT", project);
   useEffect(() => {
     if (!user) navigate("/login");
-  }, []);
+  }, [projectId]);
 
   useEffect(() => {
     dispatch(getProject(projectId));
@@ -43,24 +46,36 @@ const SingleProject = () => {
 
   const [detailsInfo, setDetailsInfo] = useState([]);
   const [detailsHeadlines, setDetailsHeadlines] = useState([]);
+  const headlines={
+    carpentry: ["Fecha", "Monto", "nro Seguimiento"],
+    ironWorking: ["Fecha","Monto","nro Factura","Fecha Factura","Estado"],
+    light: ["Fecha", "Monto", "Estado"],
+    marble: ["Fecha", "Monto"],
+    income: ["Fecha", "Monto", "Metodo Pago"]
+  }
+  
   useEffect(() => {
     const cat = showDetails.slice(0, 3);
     switch (cat) {
       case "Car":
         setDetailsInfo(project.carpentry_outcomes);
-        setDetailsHeadlines(["Fecha", "Monto", "nro Seguimiento"]);
+        setDetailsHeadlines(headlines.carpentry);
         break;
       case "Her":
         setDetailsInfo(project.iron_working_outcomes);
-        setDetailsHeadlines(["Fecha","Monto","nro Factura","Fecha Factura","Estado",]);
+        setDetailsHeadlines(headlines.ironWorking);
         break;
       case "Ilu":
         setDetailsInfo(project.light_outcomes);
-        setDetailsHeadlines(["Fecha", "Monto", "Estado"]);
+        setDetailsHeadlines(headlines.light);
         break;
       case "Mar":
         setDetailsInfo(project.marble_outcomes);
-        setDetailsHeadlines(["Fecha", "Monto"]);
+        setDetailsHeadlines(headlines.marble);
+        break;
+      case "Ing":
+        setDetailsInfo(project.income_partials);
+        setDetailsHeadlines(headlines.income);
         break;
       default:
         setDetailsInfo([]);
@@ -166,7 +181,10 @@ const SingleProject = () => {
   return (
     <>
       <Grid categories={categories} incomeData={incomeData} />
-      <LoadModal show={showLoad} closeModal={closeModal} />
+      {showLoad===showStates.loadCarp && <CarpentryLoadModal show={showLoad} closeModal={closeModal} />}
+      {showLoad===showStates.loadIron && <IronWorkingLoadModal show={showLoad} closeModal={closeModal} />}
+      {showLoad===showStates.loadLights && <LightLoadModal show={showLoad} closeModal={closeModal} />}
+      {showLoad===showStates.loadMarble && <MarbleLoadModal show={showLoad} closeModal={closeModal} />}
       <PayModal show={showPay} closeModal={closeModal} />
       <DetailsModal
         show={showDetails}

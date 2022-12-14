@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "./state/user";
 import SingleProject from "./components/SingleProject";
+import Loading from "./components/Loading";
 
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/general" element={<Home />} />
             <Route path="/project/:projectId" element={<SingleProject />} />
+            <Route path="/loading" element={<Loading />} />
             <Route path="/*" element={<NotFound />} />
           </Routes>
         </div>

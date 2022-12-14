@@ -72,3 +72,12 @@
     padding: 2px 15px;
     font-family: Arial;
 }
+
+.basic-input {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    width: 120px;
+    text-align: center;
+    margin-left: 3px;
+}

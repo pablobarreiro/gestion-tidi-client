@@ -32,15 +32,15 @@ const IncomeCard = ({
           </div>
         </div>
         <div className="card-buttons">
-          <button className="main-button" onClick={loadOnClick}>
+          {loadOnClick && <button className="main-button" onClick={loadOnClick}>
             cargar
-          </button>
-          <button className="main-button" onClick={payOnClick}>
+          </button>}
+          {payOnClick && <button className="main-button" onClick={payOnClick}>
             pagar
-          </button>
-          <button className="main-button" onClick={detailsOnClick}>
+          </button>}
+          {detailsOnClick && <button className="main-button" onClick={detailsOnClick}>
             ver detalles
-          </button>
+          </button>}
         </div>
       </div>
     </>
