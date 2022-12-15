@@ -39,7 +39,6 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
     closeModal();
   };
 
-  console.log('INVOICE TO PAY', invoiceToPay)
   return (
     <>
       <Modal show={show} onHide={closeModal} centered>

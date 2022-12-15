@@ -48,7 +48,7 @@ const IronWorkingLoadModal = ({ show, closeModal }) => {
             {list.map((item) => (
               <li key={item.value}>
                 {item.value} : {item.type==='number' && '$'} {" "}
-                <input className="basic-input" placeholder={item.type==='date' && 'AAAA/MM/DD'} {...item.input} />{" "}
+                <input className="basic-input" placeholder={item.type==='date' ? 'AAAA/MM/DD': ''} {...item.input} />{" "}
                 {item.break && <hr/>}
               </li>
             ))}

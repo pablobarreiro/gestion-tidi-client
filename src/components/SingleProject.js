@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProject } from "../state/project";
-import PayModal from "../commons/LoadModal";
-import LoadModal from "../commons/LoadModal";
 import DetailsModal from "../commons/DetailsModal";
 import CarpentryLoadModal from "./CarpentryLoadModal";
 import IronWorkingLoadModal from "./IronWorkingLoadModal";

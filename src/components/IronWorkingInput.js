@@ -13,7 +13,7 @@ const IronWorkingInput = ({ outcome, invoiceToPay, setInvoiceToPay }) => {
     await axios.delete(ironWorkingDeleteOutcome(outcome.id));
     dispatch(getProject(outcome.projectId));
   };
-console.log("OUTCOME", outcome)
+
   useEffect(() => {
     const index = invoiceToPay.findIndex(
       (invoice) => invoice.id === outcome.id
