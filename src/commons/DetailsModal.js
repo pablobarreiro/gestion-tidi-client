@@ -24,7 +24,7 @@ const DetailsModal = ({show, closeModal, headlines, detailsInfo}) => {
       </thead>
       <tbody>
         {detailsInfo && detailsInfo.map(data => 
-        <tr>
+        <tr key={data.id}>
           <td>{data.pay_date && data.pay_date.slice(0,10)}</td>
           <td>{show==='Marmol - Detalles'? "USD": "$"} {data.amount}</td>
           {detailsInfo[0].tracking_number && <td>{data.tracking_number}</td>}

@@ -32,7 +32,7 @@ const CarpentryPayModal = ({show, closeModal}) => {
     const shippingAndPlacementArray = shippingToPay.concat(placementToPay)
     const date = new Date()
     console.log(date)
-    if(payDate.value.length < 0) alert('la fecha esta mal')
+    if(payDate.value.length < 8) alert('la fecha esta mal')
     else if(!projectsToSend.length || !shippingAndPlacementArray.length ) alert('no pusiste nada, perro')
     else {
       const objectToSend = {pay_date: new Date(payDate.value),projects: projectsToSend}

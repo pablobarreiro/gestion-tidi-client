@@ -22,6 +22,7 @@ export const ironWorkingUpdateTotals = (projectId) => `${baseUri}api/ironWorking
 export const ironWorkingNewInvoice = () => `${baseUri}api/ironWorking/invoice`
 export const ironWorkingNewInvoices = () => `${baseUri}api/ironWorking/invoices`
 export const ironWorkingPayInvoices = () => `${baseUri}api/ironWorking/invoices`
+export const ironWorkingDeleteOutcome = (outcomeId) => `${baseUri}api/ironWorking/outcome/${outcomeId}`
 
 // Lights routes
 export const lightOutcomes = (projectId) => `${baseUri}api/light/${projectId}/outcomes`

@@ -11,6 +11,7 @@ import IronWorkingLoadModal from "./IronWorkingLoadModal";
 import LightLoadModal from "./LightLoadModal";
 import MarbleLoadModal from "./MarbleLoadModal";
 import CarpentryPayModal from "./CarpentryPayModal";
+import IronWorkingPayModal from "./IronWorkingPayModal";
 
 const SingleProject = () => {
   const navigate = useNavigate();
@@ -187,7 +188,7 @@ const SingleProject = () => {
       {showLoad===showStates.loadLights && <LightLoadModal show={showLoad} closeModal={closeModal} />}
       {showLoad===showStates.loadMarble && <MarbleLoadModal show={showLoad} closeModal={closeModal} />}
       {showPay ===showStates.payCarp && <CarpentryPayModal show={showPay} closeModal={closeModal} />}
-      {showPay !==showStates.payCarp && <PayModal show={showPay} closeModal={closeModal} />}
+      {showPay ===showStates.payIron && <IronWorkingPayModal show={showPay} closeModal={closeModal} />}
       <DetailsModal
         show={showDetails}
         closeModal={closeModal}
