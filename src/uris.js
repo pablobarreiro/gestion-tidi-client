@@ -1,4 +1,4 @@
-const baseUri = process.env.REACT_APP_CORS_URL ?? 'http://localhost:3001/'
+const baseUri = process.env.REACT_APP_CORS_URL ?? 'http://localhost:3000/'
 
 // Project routes
 export const getProjectRoute = (projectId) => `${baseUri}api/projects/single/${projectId}`

@@ -5,6 +5,7 @@ import { carpentryUpdateTotals, getProjectRoute, getAllProjectsRoute } from "../
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Button from '../commons/Button'
 
 const CarpentryLoadModal = ({ show, closeModal }) => {
   const navigate = useNavigate();
@@ -71,8 +72,8 @@ const CarpentryLoadModal = ({ show, closeModal }) => {
           </ul>
         </Modal.Body>
         <Modal.Footer>
-          <button onClick={handleSubmitLoad}>Cargar</button>
-          <button onClick={closeModal}>Cancelar</button>
+          <Button text='Cargar' onClick={handleSubmitLoad}>Cargar</Button>
+          <Button text='Cancelar' onClick={closeModal}>Cancelar</Button>
         </Modal.Footer>
       </Modal>
     </>
