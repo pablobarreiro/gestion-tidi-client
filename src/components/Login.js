@@ -42,7 +42,7 @@ const Login = () => {
       <Alert variant="warning" show={showAlert} onClose={() => ( setShowAlert(false))} dismissible>
         <Alert.Heading>¡Atención!</Alert.Heading>
         <p>
-          E-mail o contraseña incorrectos
+          Nombre de usuario o contraseña incorrectos
         </p>
       </Alert>
       <Form  onSubmit={handleSubmit} align="center">

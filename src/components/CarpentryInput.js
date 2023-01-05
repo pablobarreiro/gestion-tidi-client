@@ -67,7 +67,7 @@ const CarpentryInput = ({ id, carpentry_general, remaining, projectsToSend,setPr
   return (
     <tr>
       <td>TM-{id}:</td>
-      <td>{`($ ${remaining})`}</td>
+      <td>{`$${remaining}`}</td>
       <td>
         <input type="number" className="basic-input" {...amount} />
       </td>
@@ -77,7 +77,7 @@ const CarpentryInput = ({ id, carpentry_general, remaining, projectsToSend,setPr
           checked={shippingPaid}
           onChange={() => setShippingPaid(!shippingPaid)}
         />{" "}
-        {!carpentry_general.shipping_paid && carpentry_general.shipping_total}
+        {!carpentry_general.shipping_paid && `$${carpentry_general.shipping_total}`}
       </td>
       <td>
         <input
@@ -85,7 +85,7 @@ const CarpentryInput = ({ id, carpentry_general, remaining, projectsToSend,setPr
           checked={placementPaid}
           onChange={() => setPlacementPaid(!placementPaid)}
         />{" "}
-        {!carpentry_general.placement_paid && carpentry_general.placement_total}{" "}
+        {!carpentry_general.placement_paid && `$${carpentry_general.placement_total}`}{" "}
       </td>
     </tr>
   );

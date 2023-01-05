@@ -3,9 +3,10 @@ import Table from 'react-bootstrap/esm/Table';
 import Modal from 'react-bootstrap/Modal'
 import { useSelector } from 'react-redux';
 import useInput from '../hooks/useInput';
-import { carpentryUpdateTotals } from '../uris';
+import { carpentryNewOutcome, carpentryUpdateTotals } from '../uris';
 import CarpentryInput from './CarpentryInput';
 import axios from 'axios'
+import {isValidDate} from '../utils/functions'
 
 
 const CarpentryPayModal = ({show, closeModal}) => {
@@ -31,15 +32,14 @@ const CarpentryPayModal = ({show, closeModal}) => {
     e.preventDefault()
     const shippingAndPlacementArray = shippingToPay.concat(placementToPay)
     const date = new Date()
-    console.log(date)
-    if(payDate.value.length < 8) alert('la fecha esta mal')
-    else if(!projectsToSend.length || !shippingAndPlacementArray.length ) alert('no pusiste nada, perro')
+    if(!isValidDate(payDate.value)) return alert('la fecha esta mal')
     else {
       const objectToSend = {pay_date: new Date(payDate.value),projects: projectsToSend}
-      console.log('enviar a db:', objectToSend)
-      // axios.post(carpentryNewOutcome(),objectToSend)
-      console.log('pagar envio e instalacion',shippingAndPlacementArray)
-      // shippingAndPlacementArray.forEach(project => axios.put(carpentryUpdateTotals(project.projectId),project))
+      // console.log('enviar a db:', objectToSend)
+      axios.post(carpentryNewOutcome(),objectToSend)
+      // console.log('pagar envio e instalacion',shippingAndPlacementArray)
+      shippingAndPlacementArray.forEach(project => axios.put(carpentryUpdateTotals(project.projectId),project))
+      closeModal()
     }
   }
 

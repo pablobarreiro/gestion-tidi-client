@@ -3,6 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProjects } from "../state/allProjects";
+import { clearProject } from "../state/project";
 
 const Home = () => {
   const [show, setShow] = useState(false);

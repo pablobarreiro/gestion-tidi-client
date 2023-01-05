@@ -1,18 +1,23 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-
-const projectList = [
-  { id: 368, name:'Susanita' },
-  { id: 841, name:'Pepito' },
-  { id: 245, name:'Juancito' }
-]
+import { useDispatch, useSelector } from 'react-redux'
+import { FaPencilAlt } from 'react-icons/fa'
+import ProjectInfoModal from './ProjectInfoModal';
+import { useEffect, useState } from 'react';
+import { clearProject } from '../state/project';
 
 const Sidebar = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const URL = useLocation().pathname
   const selectedProject = useSelector(state => state.project)
 
+  useEffect(()=> {
+    if(URL ==='/general') dispatch(clearProject(null))
+  })
+
   const allProjects = useSelector(state => state.allProjects)
+
+  const [show,setShow] = useState(false)
 
   if(URL === '/general') return (
     <div className="sidebar-container">
@@ -24,7 +29,8 @@ const Sidebar = () => {
   )
   if(selectedProject) return (
     <div className="sidebar-container">
-      <h3>TM-{selectedProject.id}</h3>
+      {URL!=='/general' && <ProjectInfoModal show={show} setShow={setShow} projectInfo={selectedProject} action='edit' />}
+      <h3>TM-{selectedProject.id} <FaPencilAlt onClick={()=>setShow(true)}/> </h3>
       <p>Cliente: {selectedProject.name}</p>
       <p>Telefono: {selectedProject.phone}</p>
       <p>Direccion: {selectedProject.direction}</p>

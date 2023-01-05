@@ -1,4 +1,4 @@
-import { createAsyncThunk, createReducer } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk, createReducer } from "@reduxjs/toolkit";
 import axios from "axios";
 import { getProjectRoute, createProjectRoute, editProjectRoute } from "../uris";
 
@@ -29,8 +29,11 @@ export const editProject = createAsyncThunk("EDIT_PROJECT", async () => {
   }
 })
 
+export const clearProject = createAction('clearProject')
+
 const projectReducer = createReducer(null, (builder)=> {
   builder.addCase(getProject.fulfilled, (state, action) => action.payload)
+  builder.addCase(clearProject, (state, action) => action.payload)
 });
 
 export default projectReducer;

@@ -8,6 +8,7 @@ import useInput from "../hooks/useInput";
 import { getProject } from "../state/project";
 import { ironWorkingPayInvoices } from "../uris";
 import IronWorkingInput from "./IronWorkingInput";
+import { isValidDate } from "../utils/functions";
 
 const IronWorkingPayModal = ({ show, closeModal }) => {
   const dispatch = useDispatch();
@@ -25,15 +26,16 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (payDate.value.length === 0) return alert('Colocar una fecha valida')
-    if (payDate.value.length < 8) return alert("El formato de la fecha esta mal");
-    const finalInvoicesToPay = invoiceToPay.map((invoice) => {
-      return invoice.paid ? 
-      invoice.pay_date ? 
-      {} :
-      { ...invoice, pay_date: new Date(payDate.value) } 
-      : invoice.pay_date ? { ...invoice, pay_date: null } : {};
-    });
+    if (!isValidDate(payDate.value)) return alert("Colocar una fecha valida");
+    const finalInvoicesToPay = invoiceToPay.map((invoice) =>
+      invoice.paid
+        ? invoice.pay_date
+          ? {}
+          : { ...invoice, pay_date: new Date(payDate.value) }
+        : invoice.pay_date
+        ? { ...invoice, pay_date: null }
+        : {}
+    );
     await axios.put(ironWorkingPayInvoices(), finalInvoicesToPay);
     dispatch(getProject(projectId));
     closeModal();
