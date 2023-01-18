@@ -7,40 +7,34 @@ const IncomeCard = ({
   payOnClick,
   detailsOnClick,
 }) => {
-  
   return (
     <>
-      <div className="card-income-container">
+      <div className="card-container">
         <h2>Cobros</h2>
-        <div className="income-columns">
-          <div className="income-rows">
-            <p>total: ${total}</p>
-            <p>ajuste: ${adjust}</p>
-            <p>60% (seña): ${Math.floor(total * 0.6)} </p>
-            <p>30% (refuerzo): ${Math.floor(total * 0.3)} </p>
-            <p>10% (final): ${Math.floor(total * 0.1)} </p>
-            <p>saldo: ${remaining}</p>
-          </div>
-          <div className="income-rows">
-            <p>Pagos cobrados</p>
-            {payments &&
-              payments.map((pay, i) => (
-                <p key={i}>
-                  {pay.pay_date} - ${pay.amount} {`(${pay.payment_method})`}
-                </p>
-              ))}
-          </div>
+        <div>
+          <p>Total: ${total}</p>
+          <p>Ajuste: ${adjust}</p>
+          {/* <p>60% (seña): ${Math.floor(total * 0.6)} </p>
+          <p>30% (refuerzo): ${Math.floor(total * 0.3)} </p>
+          <p>10% (final): ${Math.floor(total * 0.1)} </p> */}
+          <p className={remaining ? "not-paid" : "paid"}>Por cobrar: ${remaining}</p>
         </div>
         <div className="card-buttons">
-          {loadOnClick && <button className="main-button" onClick={loadOnClick}>
-            cargar
-          </button>}
-          {payOnClick && <button className="main-button" onClick={payOnClick}>
-            pagar
-          </button>}
-          {detailsOnClick && <button className="main-button" onClick={detailsOnClick}>
-            ver detalles
-          </button>}
+          {loadOnClick && (
+            <button className="main-button" onClick={loadOnClick}>
+              Totales
+            </button>
+          )}
+          {payOnClick && (
+            <button className="main-button" onClick={payOnClick}>
+              Cobrar
+            </button>
+          )}
+          {detailsOnClick && (
+            <button className="main-button" onClick={detailsOnClick}>
+              Ver detalles
+            </button>
+          )}
         </div>
       </div>
     </>

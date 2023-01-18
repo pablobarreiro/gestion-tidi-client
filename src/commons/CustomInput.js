@@ -1,18 +1,8 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
-import { useDispatch } from "react-redux";
-import { ironWorkingDeleteOutcome } from "../uris";
-import { getProject } from "../state/project";
 
-const IronWorkingInput = ({ outcome, invoiceToPay, setInvoiceToPay }) => {
-  const dispatch = useDispatch();
+const CustomInput = ({ outcome, invoiceToPay, setInvoiceToPay, handleDelete }) => {
   const [invoicePaid, setInvoicePaid] = useState(outcome.paid);
-
-  const handleDelete = async () => {
-    await axios.delete(ironWorkingDeleteOutcome(outcome.id));
-    dispatch(getProject(outcome.projectId));
-  };
 
   useEffect(() => {
     const index = invoiceToPay.findIndex(
@@ -60,9 +50,9 @@ const IronWorkingInput = ({ outcome, invoiceToPay, setInvoiceToPay }) => {
 
   return (
     <tr>
-      <td>{outcome.invoice_number}</td>
-      <td>{outcome.invoice_date.slice(0, 10)}</td>
-      <td>{outcome.amount}</td>
+      {outcome.invoice_number && <td>{outcome.invoice_number}</td>}
+      {outcome.invoice_date && <td>{outcome.invoice_date.slice(0, 10)}</td>}
+      <td>$ {outcome.amount}</td>
       <td>
         <input
           type="checkbox"
@@ -71,10 +61,10 @@ const IronWorkingInput = ({ outcome, invoiceToPay, setInvoiceToPay }) => {
         />
       </td>
       <td>
-        <FaTrash onClick={handleDelete} />
+        <FaTrash onClick={()=>handleDelete(outcome)} />
       </td>
     </tr>
   );
 };
 
-export default IronWorkingInput;
+export default CustomInput;

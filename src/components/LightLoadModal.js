@@ -64,8 +64,8 @@ const LightLoadModal = ({ show, closeModal }) => {
           </ul>
         </Modal.Body>
         <Modal.Footer>
-          <button onClick={handleSubmitLoad}>Cargar</button>
-          <button onClick={closeModal}>Cancelar</button>
+          <button className='main-button' onClick={handleSubmitLoad}>Cargar</button>
+          <button className='main-button' onClick={closeModal}>Cancelar</button>
         </Modal.Footer>
       </Modal>
     </>

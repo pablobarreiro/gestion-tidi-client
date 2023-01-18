@@ -6,23 +6,23 @@ import { useDispatch, useSelector } from "react-redux";
 import Button from "../commons/Button";
 import useInput from "../hooks/useInput";
 import { getProject } from "../state/project";
-import { ironWorkingDeleteOutcome, ironWorkingPayInvoices, ironWorkingUpdateTotals } from "../uris";
+import { lightDeleteOutcome, lightPayInvoices, lightUpdateTotals } from "../uris";
 import CustomInput from "../commons/CustomInput";
 import { isValidDate } from "../utils/functions";
 import { useNavigate } from "react-router-dom";
 
-const IronWorkingPayModal = ({ show, closeModal }) => {
+const LightPayModal = ({ show, closeModal }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch();
-  const { iron_working_outcomes, iron_working_general } = useSelector(
+  const { light_outcomes, light_general } = useSelector(
     (state) => state.project
   );
   const payDate = useInput("");
-  const { projectId } = iron_working_general;
+  const { projectId } = light_general;
   const [invoiceToPay, setInvoiceToPay] = useState([]);
-  const [adjustPaid, setAdjustPaid] = useState(iron_working_general.adjust_paid);
+  const [adjustPaid, setAdjustPaid] = useState(light_general.adjust_paid);
 
-  const adjustPayingSubtotal = !iron_working_general.adjust_paid ? adjustPaid ? iron_working_general.adjust:0:0;
+  const adjustPayingSubtotal = !light_general.adjust_paid ? adjustPaid ? light_general.adjust:0:0;
   const invoicePayingSubtotal = invoiceToPay.reduce(
     (acum, invoice) => (invoice.paid ? Number(invoice.amount) + acum : acum),
     0
@@ -42,9 +42,9 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
         ? { ...invoice, pay_date: null }
         : {}
     );
-    await axios.put(ironWorkingPayInvoices(), finalInvoicesToPay);
-    if (adjustPaid !== iron_working_general.adjust_paid)
-      await axios.put(ironWorkingUpdateTotals(projectId), {
+    await axios.put(lightPayInvoices(), finalInvoicesToPay);
+    if (adjustPaid !== light_general.adjust_paid)
+      await axios.put(lightUpdateTotals(projectId), {
         adjust_paid: adjustPaid,
       });
     dispatch(getProject(projectId));
@@ -53,7 +53,7 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
   };
 
   const handleDelete = async (outcome) => {
-    await axios.delete(ironWorkingDeleteOutcome(outcome.id));
+    await axios.delete(lightDeleteOutcome(outcome.id));
     dispatch(getProject(outcome.projectId));
   };
 
@@ -63,13 +63,13 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
         show={show}
         onHide={closeModal}
         fullscreen="lg-down"
-        size={iron_working_outcomes.length ? "lg" : "md"}
+        size={light_outcomes.length ? "lg" : "md"}
         centered
       >
         <Modal.Header closeButton>
           <Modal.Title>{show}</Modal.Title>
         </Modal.Header>
-        {iron_working_outcomes.length ? (
+        {light_outcomes.length ? (
           <>
             <Modal.Body>
               <form id="carpentry-payment">
@@ -85,14 +85,12 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
                 <Table>
                   <thead>
                     <tr>
-                      <th>Nro Factura</th>
-                      <th>Fecha Factura</th>
                       <th>Monto</th>
                       <th>Pagar</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {iron_working_outcomes.map((outcome) => (
+                    {light_outcomes.map((outcome) => (
                       <CustomInput
                         key={outcome.id}
                         outcome={outcome}
@@ -103,7 +101,7 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
                     ))}
                   </tbody>
                 </Table>
-                {iron_working_general.adjust > 0 && (
+                {light_general.adjust > 0 && (
                   <p>
                     Pagar Ajuste:{" "}
                     <input
@@ -111,8 +109,8 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
                       checked={adjustPaid}
                       onChange={() => setAdjustPaid(!adjustPaid)}
                     />{" "}
-                    {!iron_working_general.adjust_paid &&
-                      `$ ${iron_working_general.adjust}`}
+                    {!light_general.adjust_paid &&
+                      `$ ${light_general.adjust}`}
                   </p>
                 )}
               </form>
@@ -143,4 +141,4 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
   );
 };
 
-export default IronWorkingPayModal;
+export default LightPayModal;

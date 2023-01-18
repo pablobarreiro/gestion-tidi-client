@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { userLogout } from "../state/user";
-import ProjectInfoModal from "./ProjectInfoModal";
+import ProjectInfoModal from "../commons/ProjectInfoModal";
 import { getUser } from "../state/user";
 
 const NavigationBar = () => {
@@ -21,17 +21,13 @@ const NavigationBar = () => {
   };
 
   useEffect(() => {
-    dispatch(getUser()).then((user) => {
-      if (user.payload) {
+    dispatch(getUser()).then(() => {
+      if (localStorage.getItem('user_values')) {
         navigate("/general");
       } else navigate("/login");
     });
   }, []);
 
-  useEffect(() => {
-    if (!user) navigate("/login");
-    else navigate("/general");
-  }, []);
   if (!user) return <></>;
 
   return (
@@ -50,9 +46,9 @@ const NavigationBar = () => {
         }}
       >
         <div>
-          Navbar{" "}
+          <q style={{cursor:'pointer'}} onClick={()=>navigate("/general")}>TIDI</q>{" "}
           {URL!=='/general' && <button className="main-button" onClick={() => navigate("/general")}>
-            Volver a General
+            Volver
           </button>}{" "}
           {URL==='/general' && <button
             className="main-button"
@@ -62,8 +58,10 @@ const NavigationBar = () => {
           </button>}{" "}
         </div>
         <div>
+          {user.username } {" "}
           <button className="main-button">Reportes</button>{" "}
-          <button className="main-button">Mi Perfil</button>
+          <button className="main-button" onClick={()=>navigate('/editGenerals')}>Generales</button>{" "}
+          <button className="main-button">Mi Perfil</button>{" "}
           <button onClick={handleLogout} className="main-button">
             Logout
           </button>{" "}

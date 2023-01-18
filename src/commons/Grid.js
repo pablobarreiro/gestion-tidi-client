@@ -1,8 +1,9 @@
 import Card from "./Card";
 import Sidebar from "../components/Sidebar";
 import IncomeCard from "../components/IncomeCard";
+import BudgetCard from "../components/BudgetCard";
 
-const Grid = ({ categories, incomeData }) => {
+const Grid = ({ categories, incomeData, budgetData }) => {
   return (
     <div className="grid-container">
       <Sidebar />
@@ -11,6 +12,7 @@ const Grid = ({ categories, incomeData }) => {
           <Card key={i} {...category} />
         ))}
         <IncomeCard {...incomeData}/>
+        {budgetData && <BudgetCard {...budgetData}/>}
       </div>
     </div>
   );

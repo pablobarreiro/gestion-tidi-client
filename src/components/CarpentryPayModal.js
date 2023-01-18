@@ -1,23 +1,24 @@
 import { useState } from 'react';
 import Table from 'react-bootstrap/esm/Table';
 import Modal from 'react-bootstrap/Modal'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useInput from '../hooks/useInput';
 import { carpentryNewOutcome, carpentryUpdateTotals } from '../uris';
 import CarpentryInput from './CarpentryInput';
 import axios from 'axios'
 import {isValidDate} from '../utils/functions'
+import { useNavigate, useParams } from 'react-router-dom';
+import { getAllProjects } from '../state/allProjects';
+import { getProject } from '../state/project';
 
 
 const CarpentryPayModal = ({show, closeModal}) => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const {projectId} = useParams()
   const allProjects = useSelector(state => state.allProjects)
-  // console.log('todos',allProjects)
-
   const payDate = useInput('')
-
   const filteredProjects = allProjects.filter(project => project.carpentry_general.total+project.carpentry_general.adjust-project.carpentry_outcomes.reduce((acum, outcome) => outcome.amount+acum,0) || !project.carpentry_general.shipping_total || !project.carpentry_general.placement_total)
-  
-  console.log('filtrados',filteredProjects)
   
   const [projectsToSend,setProjectsToSend] = useState([])
   const [shippingToPay,setShippingToPay] = useState([])
@@ -27,25 +28,24 @@ const CarpentryPayModal = ({show, closeModal}) => {
   const placementAmount = placementToPay.reduce((acum,project) => project.placement_paid ? Number(project.placement_total)+acum : acum,0)
   const totalPayingAmount = projectAmount + shippingAmount + placementAmount
 
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const shippingAndPlacementArray = shippingToPay.concat(placementToPay)
     const date = new Date()
     if(!isValidDate(payDate.value)) return alert('la fecha esta mal')
-    else {
-      const objectToSend = {pay_date: new Date(payDate.value),projects: projectsToSend}
-      // console.log('enviar a db:', objectToSend)
-      axios.post(carpentryNewOutcome(),objectToSend)
-      // console.log('pagar envio e instalacion',shippingAndPlacementArray)
-      shippingAndPlacementArray.forEach(project => axios.put(carpentryUpdateTotals(project.projectId),project))
-      closeModal()
-    }
+    navigate('/loading')
+    const objectToSend = {pay_date: new Date(payDate.value),projects: projectsToSend}
+    await axios.post(carpentryNewOutcome(),objectToSend)
+    shippingAndPlacementArray.forEach(async project => await axios.put(carpentryUpdateTotals(project.projectId),project))
+    dispatch(getAllProjects())
+    dispatch(getProject(projectId))
+    navigate(`/project/${projectId}`)
+    closeModal()
   }
 
   return (
     <>
-      <Modal show={show} onHide={closeModal} centered>
+      <Modal show={show} onHide={closeModal} fullscreen='lg-down' size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>
             {show}
@@ -65,15 +65,30 @@ const CarpentryPayModal = ({show, closeModal}) => {
                 </tr>
               </thead>
             <tbody>
-                {filteredProjects.map(project => <CarpentryInput key={project.id} projectsToSend={projectsToSend} setProjectsToSend={setProjectsToSend} shippingToPay={shippingToPay} setShippingToPay={setShippingToPay} placementToPay={placementToPay} setPlacementToPay={setPlacementToPay} {...project} remaining={project.carpentry_general.total+project.carpentry_general.adjust-project.carpentry_outcomes.reduce((acum, outcome) => outcome.amount+acum,0)} />)}
+                {filteredProjects.map(project => 
+                  <CarpentryInput key={project.id} 
+                  projectsToSend={projectsToSend} 
+                  setProjectsToSend={setProjectsToSend} 
+                  shippingToPay={shippingToPay} 
+                  setShippingToPay={setShippingToPay} 
+                  placementToPay={placementToPay} 
+                  setPlacementToPay={setPlacementToPay} 
+                  {...project} 
+                  remaining={
+                    project.carpentry_general.total +
+                    project.carpentry_general.adjust -
+                    project.carpentry_outcomes.reduce((acum, outcome) => outcome.amount+acum,0)
+                  } 
+                  />
+                )}
             </tbody>
             </Table>
           </form>
           <p>Total a pagar: $ {totalPayingAmount}</p>
         </Modal.Body>
         <Modal.Footer>
-          <button type="submit" form='carpentry-payment' onClick={handleSubmit}>Aceptar</button>
-          <button onClick={closeModal}>Close</button>
+          <button className='main-button' type="submit" form='carpentry-payment' onClick={handleSubmit}>Aceptar</button>
+          <button className='main-button' onClick={closeModal}>Cancelar</button>
         </Modal.Footer>
       </Modal>
     </>

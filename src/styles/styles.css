@@ -81,3 +81,7 @@
     text-align: center;
     margin-left: 3px;
 }
+
+.generals-container {
+    display: flex;
+}

@@ -6,9 +6,9 @@ import Footer from "./components/Footer";
 import { Route, Routes } from "react-router-dom";
 import NotFound from "./commons/NotFound";
 import Login from "./components/Login";
-import { useSelector } from "react-redux";
 import SingleProject from "./components/SingleProject";
 import Loading from "./commons/Loading";
+import EditGenerals from "./components/EditGenerals";
 
 function App() {
 
@@ -20,6 +20,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/general" element={<Home />} />
+            <Route path="/editGenerals" element={<EditGenerals />} />
             <Route path="/project/:projectId" element={<SingleProject />} />
             <Route path="/loading" element={<Loading />} />
             <Route path="/*" element={<NotFound />} />

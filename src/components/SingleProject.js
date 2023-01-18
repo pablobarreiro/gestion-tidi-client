@@ -10,6 +10,10 @@ import LightLoadModal from "./LightLoadModal";
 import MarbleLoadModal from "./MarbleLoadModal";
 import CarpentryPayModal from "./CarpentryPayModal";
 import IronWorkingPayModal from "./IronWorkingPayModal";
+import LightPayModal from "./LightPayModal";
+import MarblePayModal from "./MarblePayModal";
+import IncomeLoadModal from "./IncomeLoadModal";
+import IncomePayModal from "./IncomePayModal";
 
 const SingleProject = () => {
   const navigate = useNavigate();
@@ -34,8 +38,11 @@ const SingleProject = () => {
     payMarble: "Marmol - Pagar parciales",
     loadMarble: "Marmol - Cargar Total/Ajustes",
     detailsMarble: "Marmol - Detalles",
+    payIncome: "Ingresos - Cobros parciales",
+    loadIncome: "Ingresos - Cargar Total/Ajustes",
+    detailsIncome: "Ingresos - Detalles",
   };
-  // console.log("SELECTED PROJECT", project);
+  
   useEffect(() => {
     if (!user) navigate("/login");
   }, [projectId]);
@@ -46,14 +53,14 @@ const SingleProject = () => {
 
   const [detailsInfo, setDetailsInfo] = useState([]);
   const [detailsHeadlines, setDetailsHeadlines] = useState([]);
-  const headlines={
-    carpentry: ["Fecha", "Monto", "nro Seguimiento"],
-    ironWorking: ["Fecha","Monto","nro Factura","Fecha Factura","Estado"],
-    light: ["Fecha", "Monto", "Estado"],
-    marble: ["Fecha", "Monto"],
-    income: ["Fecha", "Monto", "Metodo Pago"]
-  }
-  
+  const headlines = {
+    carpentry: ["Fecha Pago", "Monto", "nro Seguimiento","Eliminar"],
+    ironWorking: ["Fecha Pago", "nro Factura", "Fecha Factura", "Monto", "Estado","Eliminar"],
+    light: ["Fecha Pago", "Monto", "Estado","Eliminar"],
+    marble: ["Fecha Pago", "Monto","Eliminar"],
+    income: ["Fecha Cobro", "Monto", "Metodo Pago","Referencia","Eliminar"],
+  };
+
   useEffect(() => {
     const cat = showDetails.slice(0, 3);
     switch (cat) {
@@ -112,7 +119,9 @@ const SingleProject = () => {
               (ac, cv) => (cv.amount ? ac + cv.amount : ac + 0),
               0
             ) +
-            project.iron_working_general.adjust -
+            (!project.iron_working_general.adjust_paid
+              ? project.iron_working_general.adjust
+              : 0) -
             project.iron_working_outcomes.reduce(
               (ac, cv) => (cv.paid ? ac + cv.amount : ac + 0),
               0
@@ -155,38 +164,70 @@ const SingleProject = () => {
           loadOnClick: () => setShowLoad(showStates.loadMarble),
           detailsOnClick: () => setShowDetails(showStates.detailsMarble),
         },
-      ];
+  ];
+  
+  const budgetData = !project 
+  ? {} 
+  : {
+      ...project.budget,
+      total: project.budget.carpentry+ project.budget.iron_working+ project.budget.light+ project.budget.marble
+  }
 
   const incomeData = !project
     ? {}
     : {
-        ...project.income_total,
-        payments: project.income_partials,
-        remaining:
-          project.income_total.total +
-          project.income_total.adjust -
-          project.income_partials.reduce((ac, cv) => ac + cv.amount, 0),
+      ...project.income_total,
+      payments: project.income_partials,
+      remaining:
+        project.income_total.total +
+        project.income_total.adjust -
+        project.income_partials.reduce((ac, cv) => ac + cv.amount, 0),
 
-        loadOnClick: () => setShowLoad("Ingresos - Cargar Total/Ajustes"),
-        payOnClick: () => setShowPay("Ingresos - Cobros parciales"),
-        detailsOnClick: () => setShowDetails("Ingresos - Detalles"),
-      };
+      loadOnClick: () => setShowLoad("Ingresos - Cargar Total/Ajustes"),
+      payOnClick: () => setShowPay("Ingresos - Cobros parciales"),
+      detailsOnClick: () => setShowDetails("Ingresos - Detalles"),
+  };
 
   const closeModal = () => {
     setShowPay("");
     setShowLoad("");
     setShowDetails("");
   };
+  if (!localStorage.getItem('user_values')) return <></>
 
   return (
     <>
-      <Grid categories={categories} incomeData={incomeData} />
-      {showLoad===showStates.loadCarp && <CarpentryLoadModal show={showLoad} closeModal={closeModal} />}
-      {showLoad===showStates.loadIron && <IronWorkingLoadModal show={showLoad} closeModal={closeModal} />}
-      {showLoad===showStates.loadLights && <LightLoadModal show={showLoad} closeModal={closeModal} />}
-      {showLoad===showStates.loadMarble && <MarbleLoadModal show={showLoad} closeModal={closeModal} />}
-      {showPay ===showStates.payCarp && <CarpentryPayModal show={showPay} closeModal={closeModal} />}
-      {showPay ===showStates.payIron && <IronWorkingPayModal show={showPay} closeModal={closeModal} />}
+      <Grid categories={categories} incomeData={incomeData} budgetData={budgetData} />
+      {showLoad === showStates.loadCarp && (
+        <CarpentryLoadModal show={showLoad} closeModal={closeModal} />
+      )}
+      {showLoad === showStates.loadIron && (
+        <IronWorkingLoadModal show={showLoad} closeModal={closeModal} />
+      )}
+      {showLoad === showStates.loadLights && (
+        <LightLoadModal show={showLoad} closeModal={closeModal} />
+      )}
+      {showLoad === showStates.loadMarble && (
+        <MarbleLoadModal show={showLoad} closeModal={closeModal} />
+      )}
+      {showLoad === showStates.loadIncome && (
+        <IncomeLoadModal show={showLoad} closeModal={closeModal} />
+      )}
+      {showPay === showStates.payCarp && (
+        <CarpentryPayModal show={showPay} closeModal={closeModal} />
+      )}
+      {showPay === showStates.payIron && (
+        <IronWorkingPayModal show={showPay} closeModal={closeModal} />
+      )}
+      {showPay === showStates.payLights && (
+        <LightPayModal show={showPay} closeModal={closeModal} />
+      )}
+      {showPay === showStates.payMarble && (
+        <MarblePayModal show={showPay} closeModal={closeModal} />
+      )}
+      {showPay === showStates.payIncome && (
+        <IncomePayModal show={showPay} closeModal={closeModal} />
+      )}
       <DetailsModal
         show={showDetails}
         closeModal={closeModal}

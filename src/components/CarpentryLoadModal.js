@@ -27,26 +27,21 @@ const CarpentryLoadModal = ({ show, closeModal }) => {
     {
       value: "Envio",
       input: shipping,
-      paid: shipping_paid,
-      setPaid: setShipping_paid,
     },
     {
       value: "Instalacion",
       input: placement,
-      paid: placement_paid,
-      setPaid: setPlacement_paid,
     },
   ];
 
-  const handleSubmitLoad = async () => {
+  const handleSubmitLoad = async (e) => {
+    e.preventDefault()
     navigate("/loading");
     await axios.put(carpentryUpdateTotals(project.id), {
       total: Number(total.value),
       adjust: Number(adjust.value),
       shipping_total: Number(shipping.value),
-      placement_total: Number(placement.value),
-      shipping_paid,
-      placement_paid
+      placement_total: Number(placement.value)
     });
     await axios.get(getProjectRoute(project.id));
     await axios.get(getAllProjectsRoute());
@@ -57,24 +52,25 @@ const CarpentryLoadModal = ({ show, closeModal }) => {
   return (
     <>
       <Modal show={show} onHide={closeModal} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{show}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ul>
-            {list.map((item) => (
-              <li key={item.value}>
-                {item.value} : ${" "}
-                <input className="basic-input" {...item.input} />{" "}
-                {item.setPaid && <><input type='checkbox' checked={item.paid} onChange={()=>item.setPaid(!item.paid)} /> {item.paid ? 'Pago': "Impago"} </>}
-              </li>
-            ))}
-          </ul>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button text='Cargar' onClick={handleSubmitLoad}>Cargar</Button>
-          <Button text='Cancelar' onClick={closeModal}>Cancelar</Button>
-        </Modal.Footer>
+        <form id='carpentry-load-form'>
+          <Modal.Header closeButton>
+            <Modal.Title>{show}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <ul>
+                {list.map((item) => (
+                  <li key={item.value}>
+                    {item.value} : ${" "}
+                    <input className="basic-input" {...item.input} />{" "}
+                    </li>
+                ))}
+            </ul>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button text='Aceptar' type='submit' form="carpentry-load-form" onClick={handleSubmitLoad} />
+            <Button text='Cancelar' onClick={closeModal} />
+          </Modal.Footer>
+        </form>
       </Modal>
     </>
   );

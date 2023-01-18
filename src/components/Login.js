@@ -65,12 +65,6 @@ const Login = () => {
           />
         </Form.Group>
 
-        {/* <Form.Group >
-          <Form.Text >
-            ¿No es un miembro? <Link to="/register">Crear una cuenta</Link>
-          </Form.Text>
-        </Form.Group> */}
-
         <button className="main-button" type="submit">
           Iniciar sesión
         </button> 
