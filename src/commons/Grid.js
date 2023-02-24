@@ -1,9 +1,8 @@
 import Card from "./Card";
 import Sidebar from "../components/Sidebar";
-import IncomeCard from "../components/IncomeCard";
 import BudgetCard from "../components/BudgetCard";
 
-const Grid = ({ categories, incomeData, budgetData }) => {
+const Grid = ({ categories, budgetData }) => {
   return (
     <div className="grid-container">
       <Sidebar />
@@ -11,7 +10,6 @@ const Grid = ({ categories, incomeData, budgetData }) => {
         {categories.map((category, i) => (
           <Card key={i} {...category} />
         ))}
-        <IncomeCard {...incomeData}/>
         {budgetData && <BudgetCard {...budgetData}/>}
       </div>
     </div>

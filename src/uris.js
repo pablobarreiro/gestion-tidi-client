@@ -2,7 +2,9 @@ const baseUri = process.env.REACT_APP_CORS_URL ?? 'http://localhost:3000/'
 
 // Project routes
 export const getProjectRoute = (projectId) => `${baseUri}api/projects/single/${projectId}`
+export const getAdminProjectRoute = (projectId) => `${baseUri}api/projects/admin/single/${projectId}`
 export const getAllProjectsRoute = () => `${baseUri}api/projects/all`
+export const getAllAdminProjectsRoute = () => `${baseUri}api/projects/admin/all`
 export const createProjectRoute = () => `${baseUri}api/projects/project`
 export const editProjectRoute = (projectId) => `${baseUri}api/projects/single/${projectId}`
 
@@ -45,6 +47,8 @@ export const loginRoute = () => `${baseUri}api/user/login`
 export const createUserRoute = () => `${baseUri}api/user/newUser`
 export const logoutRoute = () => `${baseUri}api/user/logout`
 export const persistRoute = () => `${baseUri}api/user/me`
+export const changeUsername = () => `${baseUri}api/user/username`
+export const changePassword = () => `${baseUri}api/user/password`
 
 //Edit generals routes
 export const salesmanList = () => `${baseUri}api/generals/salesman`
@@ -55,4 +59,5 @@ export const deleteBranch = (id) => `${baseUri}api/generals/branch/${id}`
 export const deleteState = (id) => `${baseUri}api/generals/internalState/${id}`
 
 //Budget routes
-export const budgetUpdateTotals = (projectId) => `${baseUri}api/budget/${projectId}/`
+export const getBudgetRoute = (projectId) => `${baseUri}api/budget/${projectId}`
+export const budgetUpdateTotals = (projectId) => `${baseUri}api/budget/${projectId}`

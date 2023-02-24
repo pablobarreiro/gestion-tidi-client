@@ -6,10 +6,11 @@ import useInput from '../hooks/useInput';
 import { carpentryNewOutcome, carpentryUpdateTotals } from '../uris';
 import CarpentryInput from './CarpentryInput';
 import axios from 'axios'
-import {isValidDate} from '../utils/functions'
+import {formatNumber, isValidDate} from '../utils/functions'
 import { useNavigate, useParams } from 'react-router-dom';
-import { getAllProjects } from '../state/allProjects';
-import { getProject } from '../state/project';
+import { getAllAdminProjects } from '../state/allProjects';
+import { getAdminProject } from '../state/project';
+import swal from 'sweetalert';
 
 
 const CarpentryPayModal = ({show, closeModal}) => {
@@ -32,13 +33,13 @@ const CarpentryPayModal = ({show, closeModal}) => {
     e.preventDefault()
     const shippingAndPlacementArray = shippingToPay.concat(placementToPay)
     const date = new Date()
-    if(!isValidDate(payDate.value)) return alert('la fecha esta mal')
+    if(!isValidDate(payDate.value)) return swal('Revisar la fecha')
     navigate('/loading')
     const objectToSend = {pay_date: new Date(payDate.value),projects: projectsToSend}
     await axios.post(carpentryNewOutcome(),objectToSend)
     shippingAndPlacementArray.forEach(async project => await axios.put(carpentryUpdateTotals(project.projectId),project))
-    dispatch(getAllProjects())
-    dispatch(getProject(projectId))
+    dispatch(getAdminProject(projectId))
+    dispatch(getAllAdminProjects())
     navigate(`/project/${projectId}`)
     closeModal()
   }
@@ -53,7 +54,7 @@ const CarpentryPayModal = ({show, closeModal}) => {
         </Modal.Header>
         <Modal.Body>
           <form id='carpentry-payment'>
-            <p>Fecha Pago : <input className='basic-input' placeholder='AAAA/MM/DD' {...payDate} /></p>
+            <p>Fecha Pago : <input className='basic-input' type='date' placeholder='AAAA/MM/DD' {...payDate} /></p>
             <Table>
               <thead>
                 <tr>
@@ -84,7 +85,7 @@ const CarpentryPayModal = ({show, closeModal}) => {
             </tbody>
             </Table>
           </form>
-          <p>Total a pagar: $ {totalPayingAmount}</p>
+          <p>Total a pagar: $ {formatNumber(totalPayingAmount)}</p>
         </Modal.Body>
         <Modal.Footer>
           <button className='main-button' type="submit" form='carpentry-payment' onClick={handleSubmit}>Aceptar</button>

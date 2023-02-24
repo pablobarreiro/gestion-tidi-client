@@ -4,8 +4,9 @@ import Table from "react-bootstrap/Table";
 import { FaTrash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import swal from "sweetalert";
-import { getProject } from "../state/project";
+import { getAdminProject } from "../state/project";
 import { carpentryDeleteOutcome, deletePayment, ironWorkingDeleteOutcome, lightDeleteOutcome, marbleDeleteOutcome } from "../uris";
+import { formatNumber } from "../utils/functions";
 
 const DetailsModal = ({ show, closeModal, headlines, detailsInfo }) => {
   const dispatch = useDispatch()
@@ -40,7 +41,7 @@ const DetailsModal = ({ show, closeModal, headlines, detailsInfo }) => {
           await axios.delete(deletePayment(data.id))
           break
         }
-      dispatch(getProject(projectId))
+      dispatch(getAdminProject(projectId))
       closeModal()
     }
   };
@@ -72,21 +73,21 @@ const DetailsModal = ({ show, closeModal, headlines, detailsInfo }) => {
               {detailsInfo &&
                 detailsInfo.map((data) => (
                   <tr key={data.id}>
-                    <td>{data.pay_date && data.pay_date.slice(0, 10)}</td>
+                    <td>{data.pay_date && data.pay_date.split('T')[0].replace(/-/g, "/")}</td>
                     {detailsInfo[0].invoice_number && (
                       <td>{data.invoice_number}</td>
                     )}
                     {detailsInfo[0].invoice_date && (
-                      <td>{data.invoice_date.slice(0, 10)}</td>
+                      <td>{data.invoice_date.split('T')[0].replace(/-/g, "/")}</td>
                     )}
                     <td>
-                      {show === "Marmol - Detalles" ? "USD" : "$"} {data.amount}
+                      {show === "Marmol - Detalles" ? "USD" : "$"} {formatNumber(data.amount)}
                     </td>
                     {detailsInfo[0].tracking_number && (
                       <td>{data.tracking_number}</td>
                     )}
-                    {headlines[headlines.length - 1] === "Estado" && (
-                      <td>{data.paid ? "Pagado" : "Impago"}</td>
+                    {headlines[headlines.length - 2] === "Estado" && (
+                      <td>{data.paid ? "Pago" : "Impago"}</td>
                     )}
                     {data.payment_method && <td>{data.payment_method}</td>}
                     {data.payment_info && <td>{data.payment_info}</td>}

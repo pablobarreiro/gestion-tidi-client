@@ -5,10 +5,10 @@ import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../commons/Button";
 import useInput from "../hooks/useInput";
-import { getProject } from "../state/project";
-import { ironWorkingDeleteOutcome, ironWorkingPayInvoices, ironWorkingUpdateTotals } from "../uris";
+import { getAdminProject } from "../state/project";
+import { ironWorkingPayInvoices, ironWorkingUpdateTotals } from "../uris";
 import CustomInput from "../commons/CustomInput";
-import { isValidDate } from "../utils/functions";
+import { formatNumber, isValidDate } from "../utils/functions";
 import { useNavigate } from "react-router-dom";
 
 const IronWorkingPayModal = ({ show, closeModal }) => {
@@ -47,14 +47,9 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
       await axios.put(ironWorkingUpdateTotals(projectId), {
         adjust_paid: adjustPaid,
       });
-    dispatch(getProject(projectId));
+    dispatch(getAdminProject(projectId));
     navigate(`/project/${projectId}`)
     closeModal();
-  };
-
-  const handleDelete = async (outcome) => {
-    await axios.delete(ironWorkingDeleteOutcome(outcome.id));
-    dispatch(getProject(outcome.projectId));
   };
 
   return (
@@ -77,6 +72,7 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
                 <p>
                   Fecha Pago :{" "}
                   <input
+                    type="date"
                     className="basic-input"
                     placeholder="AAAA/MM/DD"
                     {...payDate}
@@ -88,6 +84,7 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
                       <th>Nro Factura</th>
                       <th>Fecha Factura</th>
                       <th>Monto</th>
+                      <th>Estado</th>
                       <th>Pagar</th>
                     </tr>
                   </thead>
@@ -98,7 +95,7 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
                         outcome={outcome}
                         invoiceToPay={invoiceToPay}
                         setInvoiceToPay={setInvoiceToPay}
-                        handleDelete={handleDelete}
+                        totalOutcomes={iron_working_outcomes}
                       />
                     ))}
                   </tbody>
@@ -116,7 +113,7 @@ const IronWorkingPayModal = ({ show, closeModal }) => {
                   </p>
                 )}
               </form>
-              <p>Total a pagar: $ {totalToPay}</p>
+              <p>Total a pagar: $ {formatNumber(totalToPay)}</p>
             </Modal.Body>
             <Modal.Footer>
               <Button

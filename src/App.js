@@ -9,6 +9,8 @@ import Login from "./components/Login";
 import SingleProject from "./components/SingleProject";
 import Loading from "./commons/Loading";
 import EditGenerals from "./components/EditGenerals";
+import Profile from "./components/Profile";
+import Reports from "./components/Reports";
 
 function App() {
 
@@ -20,6 +22,8 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/general" element={<Home />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/reports/*" element={<Reports />} />
             <Route path="/editGenerals" element={<EditGenerals />} />
             <Route path="/project/:projectId" element={<SingleProject />} />
             <Route path="/loading" element={<Loading />} />

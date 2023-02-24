@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal'
 import { useDispatch, useSelector } from 'react-redux';
 import useInput from '../hooks/useInput';
 import axios from 'axios'
-import {isValidDate} from '../utils/functions'
+import {formatNumber, isValidDate} from '../utils/functions'
 import { useNavigate, useParams } from 'react-router-dom';
-import { getAllProjects } from '../state/allProjects';
-import { getProject } from '../state/project';
+import { getAllAdminProjects } from '../state/allProjects';
+import { getAdminProject } from '../state/project';
 import { marbleNewOutcome, marbleUpdateTotals } from '../uris';
+import swal from 'sweetalert';
 
 
 const MarblePayModal = ({show, closeModal}) => {
@@ -20,23 +21,27 @@ const MarblePayModal = ({show, closeModal}) => {
   const payDate = useInput('')
   const [placementPaid,setPlacementPaid] = useState(marble_general.placement_paid || false)
 
+  const remaining = marble_general.total + marble_general.adjust - marble_outcomes.reduce((acum,outcome)=> acum + outcome.amount,0)
 
+  useEffect(()=> {
+    if(payTotal.value > remaining) payTotal.setvalue(remaining)
+    if(payTotal.value<0) payTotal.setvalue(0)
+  },[payTotal.value])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if(payTotal.value) {
-      if(!isValidDate(payDate.value)) return alert('la fecha esta mal')
+      if(!isValidDate(payDate.value)) return swal('Colocar una fecha valida')
       navigate('/loading')
       const objectToSend = {pay_date: new Date(payDate.value),amount: payTotal.value, projectId:Number(projectId),id:null}
       await axios.post(marbleNewOutcome(), objectToSend)
-
     }
     if(marble_general.placement_paid !== placementPaid) {
       navigate('/loading')
       await axios.put(marbleUpdateTotals(projectId),{placement_paid:placementPaid})
     } 
-    dispatch(getAllProjects())
-    dispatch(getProject(projectId))
+    dispatch(getAllAdminProjects())
+    dispatch(getAdminProject(projectId))
     navigate(`/project/${projectId}`)
     closeModal()
   }
@@ -52,10 +57,10 @@ const MarblePayModal = ({show, closeModal}) => {
         <Modal.Body>
           <h5>TM-{projectId}</h5>
           <form id='marble-payment' onSubmit={handleSubmit}>
-            <p>Total: USD {marble_general.total}</p>
-            <p>Faltante: USD {marble_general.total + marble_general.adjust - marble_outcomes.reduce((acum,outcome)=> acum + outcome.amount,0)}</p>
+            <p>Total: USD {formatNumber(marble_general.total)}</p>
+            <p>Restante: USD {formatNumber(remaining)}</p>
+            <p>Fecha de Pago : <input className='basic-input' type='date' {...payDate} /></p>
             <p>Total a pagar: USD <input className='basic-input' {...payTotal}/></p>
-            <p>Fecha de Pago : <input className='basic-input' placeholder='AAAA/MM/DD' {...payDate} /></p>
             <p>Pagar Colocacion: <input checked={placementPaid} onClick={()=> setPlacementPaid(!placementPaid)} type='checkbox' /> {!marble_general.placement_paid && `$ ${marble_general.placement_total}`}</p>
           </form>
         </Modal.Body>

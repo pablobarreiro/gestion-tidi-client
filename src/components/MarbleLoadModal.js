@@ -1,29 +1,27 @@
 import Modal from "react-bootstrap/Modal";
 import useInput from "../hooks/useInput";
 import axios from "axios";
-import { marbleUpdateTotals, getProjectRoute, getAllProjectsRoute } from "../uris";
-import { useSelector } from "react-redux";
+import { marbleUpdateTotals } from "../uris";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { getAdminProject } from "../state/project";
+import { getAllAdminProjects } from "../state/allProjects";
 
 const MarbleLoadModal = ({ show, closeModal }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const project = useSelector((state) => state.project);
   const total = useInput(project.marble_general.total ?? 0);
   const adjust = useInput(project.marble_general.adjust ?? 0);
-  const placement = useInput(project.marble_general.placement_total ?? 0);
-  const [placement_paid, setPlacement_paid] = useState(
-    project.marble_general.placement_paid ?? false
-  );
+  const placement = useInput(project.marble_general.placement_total ?? 0)
 
   const list = [
     { value: "Total", input: total },
     { value: "Ajuste", input: adjust },
     {
       value: "Colocacion",
-      input: placement,
-      paid: placement_paid,
-      setPaid: setPlacement_paid,
+      input: placement
     },
   ];
 
@@ -32,11 +30,10 @@ const MarbleLoadModal = ({ show, closeModal }) => {
     await axios.put(marbleUpdateTotals(project.id), {
       total: Number(total.value),
       adjust: Number(adjust.value),
-      placement_total: Number(placement.value),
-      placement_paid
+      placement_total: Number(placement.value)
     });
-    await axios.get(getProjectRoute(project.id));
-    await axios.get(getAllProjectsRoute());
+    dispatch(getAdminProject(project.id));
+    dispatch(getAllAdminProjects());
     navigate(`/project/${project.id}`);
     closeModal();
   };
@@ -53,8 +50,7 @@ const MarbleLoadModal = ({ show, closeModal }) => {
               <li key={item.value}>
                 {item.value} : {item.value==='Colocacion' ? '$' : 'USD' }{" "}
                 <input className="basic-input" {...item.input} />{" "}
-                {item.setPaid && <><input type='checkbox' checked={item.paid} onChange={()=>item.setPaid(!item.paid)} /> {item.paid ? 'Pago': "Impago"} </>}
-              </li>
+                </li>
             ))}
           </ul>
         </Modal.Body>

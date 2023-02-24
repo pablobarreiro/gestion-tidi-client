@@ -1,25 +1,21 @@
 import Modal from "react-bootstrap/Modal";
 import useInput from "../hooks/useInput";
 import axios from "axios";
-import { carpentryUpdateTotals, getProjectRoute, getAllProjectsRoute } from "../uris";
-import { useSelector } from "react-redux";
+import { carpentryUpdateTotals } from "../uris";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import Button from '../commons/Button'
+import { getAdminProject } from "../state/project";
+import { getAllAdminProjects } from "../state/allProjects";
 
 const CarpentryLoadModal = ({ show, closeModal }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
   const project = useSelector((state) => state.project);
   const total = useInput(project.carpentry_general.total ?? 0);
   const adjust = useInput(project.carpentry_general.adjust ?? 0);
   const shipping = useInput(project.carpentry_general.shipping_total ?? 0);
   const placement = useInput(project.carpentry_general.placement_total ?? 0);
-  const [shipping_paid, setShipping_paid] = useState(
-    project.carpentry_general.shipping_paid ?? false
-  );
-  const [placement_paid, setPlacement_paid] = useState(
-    project.carpentry_general.placement_paid ?? false
-  );
 
   const list = [
     { value: "Total", input: total },
@@ -43,8 +39,8 @@ const CarpentryLoadModal = ({ show, closeModal }) => {
       shipping_total: Number(shipping.value),
       placement_total: Number(placement.value)
     });
-    await axios.get(getProjectRoute(project.id));
-    await axios.get(getAllProjectsRoute());
+    dispatch(getAdminProject(project.id));
+    dispatch(getAllAdminProjects());
     navigate(`/project/${project.id}`);
     closeModal();
   };

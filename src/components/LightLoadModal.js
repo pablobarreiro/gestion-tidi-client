@@ -1,46 +1,50 @@
 import Modal from "react-bootstrap/Modal";
 import useInput from "../hooks/useInput";
 import axios from "axios";
-import { lightNewInvoice, lightUpdateTotals, getProjectRoute, getAllProjectsRoute } from "../uris";
-import { useSelector } from "react-redux";
+import { lightNewInvoice, lightUpdateTotals } from "../uris";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { getAdminProject } from "../state/project";
+import { getAllAdminProjects } from "../state/allProjects";
+import { isValidDate } from "../utils/functions";
+import swal from "sweetalert";
 
 const LightLoadModal = ({ show, closeModal }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const project = useSelector((state) => state.project);
+  const date = useInput(0);
   const amount = useInput(0);
   const adjust = useInput(project.light_general.adjust ?? 0);
   const placement = useInput(project.light_general.placement_total ?? 0);
-  const [placement_paid, setPlacement_paid] = useState(
-    project.light_general.placement_paid ?? false
-  );
 
   const list = [
-    { value: "Monto", input: amount, break: true },
-    { value: "Ajuste", input: adjust },
-    {
-      value: "Instalacion",
-      input: placement,
-      paid: placement_paid,
-      setPaid: setPlacement_paid,
-    },
+    { value: "Fecha", input: date , type:'date' },
+    { value: "Monto", input: amount, type:'number', break: true },
+    { value: "Ajuste", input: adjust, type:'number' },
+    { value: "Instalacion", input: placement, type: 'number' },
   ];
 
   const handleSubmitLoad = async () => {
-    navigate("/loading");
-    await axios.put(lightUpdateTotals(project.id), {
+    if(amount.value || date.value) {
+      if(!isValidDate(date.value)) return swal('Revisar la fecha') 
+      navigate("/loading");
+      await axios.post(lightNewInvoice(project.id), {
+        date: new Date(date.value),
+        amount: Number(amount.value),
+        projectId: project.id
+      });
+    } 
+    if(adjust.value || placement.value) {
+      navigate("/loading");
+      await axios.put(lightUpdateTotals(project.id), {
       adjust: Number(adjust.value),
-      placement_total: Number(placement.value),
-      placement_paid
+      placement_total: Number(placement.value)
     });
-    if(amount.value) await axios.post(lightNewInvoice(project.id), {
-      amount: Number(amount.value),
-      projectId: project.id
-    });
-    navigate("/loading");
-    await axios.get(getProjectRoute(project.id));
-    await axios.get(getAllProjectsRoute());
+    }
+    dispatch(getAdminProject(project.id));
+    dispatch(getAllAdminProjects());
     navigate(`/project/${project.id}`);
     closeModal();
   };
@@ -52,19 +56,20 @@ const LightLoadModal = ({ show, closeModal }) => {
           <Modal.Title>{show}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ul>
-            {list.map((item) => (
-              <li key={item.value}>
-                {item.value} : ${" "}
-                <input className="basic-input" {...item.input} />{" "}
-                {item.setPaid && <><input type='checkbox' checked={item.paid} onChange={()=>item.setPaid(!item.paid)} /> {item.paid? 'Pagado': "Impago"} </>}
-                {item.break && <hr/>}
-              </li>
-            ))}
-          </ul>
+          <form id='light-load-form'  onSubmit={handleSubmitLoad}>
+            <ul>
+              {list.map((item) => (
+                <li key={item.value}>
+                  {item.value} : {item.type==='number' && '$'}{" "}
+                  <input className="basic-input" type={item.type==='date' ? 'date' : 'number'} {...item.input} />{" "}
+                  {item.break && <hr/>}
+                </li>
+              ))}
+            </ul>
+          </form>
         </Modal.Body>
         <Modal.Footer>
-          <button className='main-button' onClick={handleSubmitLoad}>Cargar</button>
+          <button className='main-button' form='light-load-form' type='submit'>Cargar</button>
           <button className='main-button' onClick={closeModal}>Cancelar</button>
         </Modal.Footer>
       </Modal>

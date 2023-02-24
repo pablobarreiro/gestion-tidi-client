@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector} from 'react-redux'
+import { useState } from 'react'
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux'
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
@@ -12,14 +12,10 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
   const [showAlert,setShowAlert] = useState(false)
-  const darkMode = useSelector(state => state.darkMode)
 
   const username = useInput();
   const password = useInput();
-
-  const loggedUser = localStorage.getItem('user_values')
 
   const handleSubmit = (e) => {
     e.preventDefault();

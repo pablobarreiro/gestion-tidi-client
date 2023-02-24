@@ -4,9 +4,9 @@ import Modal from "react-bootstrap/Modal";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import useInput from "../hooks/useInput";
-import { getAllProjects } from "../state/allProjects";
-import { getProject } from "../state/project";
-import { editProjectRoute, createProjectRoute, salesmanList, branchList, stateList } from "../uris";
+import { getAllAdminProjects } from "../state/allProjects";
+import { getAdminProject } from "../state/project";
+import { editProjectRoute, createProjectRoute, salesmanList, branchList, stateList, getAllAdminProjectsRoute } from "../uris";
 import { isValidDate } from '../utils/functions'
 
 const ProjectInfoModal = ({ show, setShow, projectInfo, action }) => {
@@ -58,8 +58,8 @@ const ProjectInfoModal = ({ show, setShow, projectInfo, action }) => {
     }else if(action ==='create') {
       await axios.post(createProjectRoute(),projectToSend)
     }
-    dispatch(getAllProjects(projectToSend.id))
-    dispatch(getProject(projectToSend.id))
+    dispatch(getAllAdminProjects(projectToSend.id))
+    dispatch(getAdminProject(projectToSend.id))
     navigate(actualLocation)
     setShow(false)
     

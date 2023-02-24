@@ -1,5 +1,6 @@
 import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
+import { formatNumber } from "../utils/functions";
 
 const AllDetailsModal = ({ show, closeModal, headlines, detailsInfo }) => {
   const title =
@@ -38,29 +39,25 @@ const AllDetailsModal = ({ show, closeModal, headlines, detailsInfo }) => {
   detailsInfo.forEach((project) => {
     const id = project.id;
     const total =
-      headlines.type === "carpentry" || headlines.type === "marble"
+      headlines.type === "carpentry" || headlines.type === "marble" || headlines.type === "income"
         ? project[totalSelector].total + project[totalSelector].adjust
-        : headlines.type === "ironWorking" || headlines.type === "light"
-        ? project[totalSelector].adjust +
+        : project[totalSelector].adjust +
           project[outcomeSelector].reduce(
             (acum, outcome) => acum + outcome.amount,
             0
           )
-        : null; //income
     const remaining =
-      headlines.type === "carpentry" || headlines.type === "marble"
+      headlines.type === "carpentry" || headlines.type === "marble" || headlines.type === "income"
         ? total -
           project[outcomeSelector].reduce(
             (acum, outcome) => acum + outcome.amount,
             0
           )
-        : headlines.type === "ironWorking" || headlines.type === "light"
-        ? total -
+        : total -
           project[outcomeSelector].reduce(
-            (acum, outcome) => (acum + outcome.paid ? outcome.amount : 0),
+            (acum, outcome) => (acum + (outcome.paid ? outcome.amount : 0)),
             0
           )
-        : null; //income
     const shippingPaid =
       !headlines.type === "carpentry"
         ? null
@@ -71,14 +68,6 @@ const AllDetailsModal = ({ show, closeModal, headlines, detailsInfo }) => {
       !headlines.type === "marble"
         ? null
         : project[totalSelector].placement_paid;
-
-        console.log({
-            projectId: id,
-            total: total,
-            remaining: remaining,
-            shippingPaid: shippingPaid,
-            placementPaid: placementPaid,
-          })
     table.push({
       projectId: id,
       total: total,
@@ -87,6 +76,8 @@ const AllDetailsModal = ({ show, closeModal, headlines, detailsInfo }) => {
       placementPaid: placementPaid,
     });
   });
+
+  console.log(table)
 
   return (
     <Modal
@@ -112,10 +103,10 @@ const AllDetailsModal = ({ show, closeModal, headlines, detailsInfo }) => {
               table.map((project) => (
                 <tr key={project.projectId}>
                   <td>TM-{project.projectId}</td>
-                  <td>{project.total}</td>
-                  <td>{project.remaining}</td>
+                  <td>{headlines.type === 'marble'? 'USD': '$'} {formatNumber(project.total)}</td>
+                  <td>{headlines.type === 'marble'? 'USD': '$'} {formatNumber(project.remaining)}</td>
                   {headlines.type === 'carpentry' && <td>{project.shippingPaid?'Pago':'Impago'}</td>}
-                  {headlines.type !== 'ironWorking' && <td>{project.placementPaid?'Pago':'Impago'}</td>}
+                  {(headlines.type === 'carpentry' || headlines.type === 'light' || headlines.type === 'marble') && <td>{project.placementPaid?'Pago':'Impago'}</td>}
                 </tr>
               ))}
           </tbody>

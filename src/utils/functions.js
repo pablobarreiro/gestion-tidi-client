@@ -11,3 +11,15 @@ export const isValidDate = (dateString) => {
     return false;
   }
 };
+
+export const formatNumber = (number)=>{
+  if(!number) return '0'
+  const string = number.toLocaleString().split('.')
+  const integer = string[0].replace(/,/g, '.')
+  const decimal = string[1]
+  return decimal ? `${integer},${decimal}` : `${integer}`
+}
+
+export const formatDate = (date) => {
+  return date.split('T')[0].replace(/-/g, "/")
+}

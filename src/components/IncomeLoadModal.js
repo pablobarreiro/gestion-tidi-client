@@ -1,14 +1,16 @@
 import Modal from "react-bootstrap/Modal";
 import useInput from "../hooks/useInput";
 import axios from "axios";
-import { getProjectRoute, getAllProjectsRoute, editIncomeTotals } from "../uris";
-import { useSelector } from "react-redux";
+import { editIncomeTotals } from "../uris";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import Button from '../commons/Button'
+import { getAllAdminProjects } from "../state/allProjects";
+import { getAdminProject } from "../state/project";
 
 const IncomeLoadModal = ({ show, closeModal }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const project = useSelector((state) => state.project);
   const total = useInput(project.income_total.total ?? 0);
   const adjust = useInput(project.income_total.adjust ?? 0);
@@ -28,8 +30,8 @@ const IncomeLoadModal = ({ show, closeModal }) => {
           total: Number(total.value),
           adjust: Number(adjust.value),
         });
-        await axios.get(getProjectRoute(project.id));
-        await axios.get(getAllProjectsRoute());
+        dispatch(getAdminProject(project.id));
+        dispatch(getAllAdminProjects());
         navigate(`/project/${project.id}`);
       }
       closeModal();

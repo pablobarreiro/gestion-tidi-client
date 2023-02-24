@@ -1,48 +1,32 @@
 import { useEffect, useState } from "react";
-import { FaTrash } from "react-icons/fa";
+import { formatNumber } from "../utils/functions";
 
-const CustomInput = ({ outcome, invoiceToPay, setInvoiceToPay, handleDelete }) => {
+const CustomInput = ({ outcome, invoiceToPay, setInvoiceToPay }) => {
   const [invoicePaid, setInvoicePaid] = useState(outcome.paid);
 
+  console.log('invoiceToPay', invoiceToPay)
   useEffect(() => {
     const index = invoiceToPay.findIndex(
       (invoice) => invoice.id === outcome.id
-    );
-    let invoiceList = [...invoiceToPay];
-      if(index <0) invoiceList.push({
-        id: outcome.id,
-        projectId: outcome.projectId,
-        amount: outcome.amount,
-        invoice_number: outcome.invoice_number,
-        pay_date: outcome.pay_date,
-        paid: invoicePaid,
-      })
-    else if (outcome.paid)
+      );
+      let invoiceList = [...invoiceToPay];
+      if(invoiceToPay.length===0) {
+        invoiceList.push({})
+      } else if(index <0) {
+        console.log('se ejecuta')
+        invoiceList.push({
+          ...outcome,
+          paid: invoicePaid,
+        })
+      } else if (outcome.paid){
       invoiceList[index] = {
-        id: outcome.id,
-        projectId: outcome.projectId,
-        amount: outcome.amount,
-        invoice_number: outcome.invoice_number,
-        pay_date: outcome.pay_date,
+        ...outcome,
         paid: false,
-      };
-    else if (invoicePaid) {
-      invoiceList[index] = {
-        id: outcome.id,
-        projectId: outcome.projectId,
-        amount: outcome.amount,
-        invoice_number: outcome.invoice_number,
-        pay_date: outcome.pay_date,
-        paid: true,
-      };
+      }
     } else {
       invoiceList[index] = {
-        id: outcome.id,
-        projectId: outcome.projectId,
-        amount: outcome.amount,
-        invoice_number: outcome.invoice_number,
-        pay_date: outcome.pay_date,
-        paid: false,
+        ...outcome,
+        paid: invoicePaid,
       };
     }
     setInvoiceToPay(invoiceList);
@@ -50,18 +34,17 @@ const CustomInput = ({ outcome, invoiceToPay, setInvoiceToPay, handleDelete }) =
 
   return (
     <tr>
+      {outcome.date && <td>{outcome.date.split('T')[0].replace(/-/g, "/")}</td>}
       {outcome.invoice_number && <td>{outcome.invoice_number}</td>}
-      {outcome.invoice_date && <td>{outcome.invoice_date.slice(0, 10)}</td>}
-      <td>$ {outcome.amount}</td>
+      {outcome.invoice_date && <td>{outcome.invoice_date.split('T')[0].replace(/-/g, "/")}</td>}
+      <td>$ {formatNumber(outcome.amount)}</td>
+      <td>{outcome.paid ? 'Pago': 'Impago'}</td>
       <td>
         <input
           type="checkbox"
           checked={invoicePaid}
           onChange={() => setInvoicePaid(!invoicePaid)}
         />
-      </td>
-      <td>
-        <FaTrash onClick={()=>handleDelete(outcome)} />
       </td>
     </tr>
   );

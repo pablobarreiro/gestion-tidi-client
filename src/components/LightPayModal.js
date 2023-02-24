@@ -5,10 +5,10 @@ import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../commons/Button";
 import useInput from "../hooks/useInput";
-import { getProject } from "../state/project";
-import { lightDeleteOutcome, lightPayInvoices, lightUpdateTotals } from "../uris";
+import { getAdminProject } from "../state/project";
+import { lightPayInvoices, lightUpdateTotals } from "../uris";
 import CustomInput from "../commons/CustomInput";
-import { isValidDate } from "../utils/functions";
+import { formatNumber, isValidDate } from "../utils/functions";
 import { useNavigate } from "react-router-dom";
 
 const LightPayModal = ({ show, closeModal }) => {
@@ -21,13 +21,15 @@ const LightPayModal = ({ show, closeModal }) => {
   const { projectId } = light_general;
   const [invoiceToPay, setInvoiceToPay] = useState([]);
   const [adjustPaid, setAdjustPaid] = useState(light_general.adjust_paid);
+  const [placementPaid, setPlacementPaid] = useState(light_general.placement_paid);
 
   const adjustPayingSubtotal = !light_general.adjust_paid ? adjustPaid ? light_general.adjust:0:0;
+  const placementPayingSubtotal = !light_general.placement_paid ? placementPaid ? light_general.placement_total:0:0;
   const invoicePayingSubtotal = invoiceToPay.reduce(
     (acum, invoice) => (invoice.paid ? Number(invoice.amount) + acum : acum),
     0
   )
-  const totalToPay = invoicePayingSubtotal+adjustPayingSubtotal
+  const totalToPay = invoicePayingSubtotal+adjustPayingSubtotal+placementPayingSubtotal
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,14 +49,14 @@ const LightPayModal = ({ show, closeModal }) => {
       await axios.put(lightUpdateTotals(projectId), {
         adjust_paid: adjustPaid,
       });
-    dispatch(getProject(projectId));
+      console.log(placementPaid)
+    if (placementPaid !== light_general.placement_paid)
+      await axios.put(lightUpdateTotals(projectId), {
+        placement_paid: placementPaid,
+      });
+    dispatch(getAdminProject(projectId));
     navigate(`/project/${projectId}`)
     closeModal();
-  };
-
-  const handleDelete = async (outcome) => {
-    await axios.delete(lightDeleteOutcome(outcome.id));
-    dispatch(getProject(outcome.projectId));
   };
 
   return (
@@ -77,6 +79,7 @@ const LightPayModal = ({ show, closeModal }) => {
                 <p>
                   Fecha Pago :{" "}
                   <input
+                    type="date"
                     className="basic-input"
                     placeholder="AAAA/MM/DD"
                     {...payDate}
@@ -85,7 +88,9 @@ const LightPayModal = ({ show, closeModal }) => {
                 <Table>
                   <thead>
                     <tr>
+                      <th>Fecha de compra</th>
                       <th>Monto</th>
+                      <th>Estado</th>
                       <th>Pagar</th>
                     </tr>
                   </thead>
@@ -96,7 +101,6 @@ const LightPayModal = ({ show, closeModal }) => {
                         outcome={outcome}
                         invoiceToPay={invoiceToPay}
                         setInvoiceToPay={setInvoiceToPay}
-                        handleDelete={handleDelete}
                       />
                     ))}
                   </tbody>
@@ -110,11 +114,23 @@ const LightPayModal = ({ show, closeModal }) => {
                       onChange={() => setAdjustPaid(!adjustPaid)}
                     />{" "}
                     {!light_general.adjust_paid &&
-                      `$ ${light_general.adjust}`}
+                      `$ ${formatNumber(light_general.adjust)}`}
+                  </p>
+                )}
+                {(
+                  <p>
+                    Pagar Instalacion:{" "}
+                    <input
+                      type="checkbox"
+                      checked={placementPaid}
+                      onChange={() => setPlacementPaid(!placementPaid)}
+                    />{" "}
+                    {!light_general.placement_paid &&
+                      `$ ${light_general.placement_total}`}
                   </p>
                 )}
               </form>
-              <p>Total a pagar: $ {totalToPay}</p>
+              <p>Total a pagar: $ {formatNumber(totalToPay)}</p>
             </Modal.Body>
             <Modal.Footer>
               <Button

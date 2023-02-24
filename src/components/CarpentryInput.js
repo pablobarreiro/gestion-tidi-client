@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import useInput from "../hooks/useInput";
+import { formatNumber } from "../utils/functions";
 
 const CarpentryInput = ({ id, carpentry_general, remaining, projectsToSend,setProjectsToSend, shippingToPay, setShippingToPay, placementToPay, setPlacementToPay }) => {
   const amount = useInput(0);
@@ -67,7 +68,7 @@ const CarpentryInput = ({ id, carpentry_general, remaining, projectsToSend,setPr
   return (
     <tr>
       <td>TM-{id}:</td>
-      <td>{`$${remaining}`}</td>
+      <td>{`$${formatNumber(remaining)}`}</td>
       <td>
         <input type="number" className="basic-input" {...amount} />
       </td>
@@ -77,7 +78,7 @@ const CarpentryInput = ({ id, carpentry_general, remaining, projectsToSend,setPr
           checked={shippingPaid}
           onChange={() => setShippingPaid(!shippingPaid)}
         />{" "}
-        {!carpentry_general.shipping_paid && `$${carpentry_general.shipping_total}`}
+        {!carpentry_general.shipping_paid && `$${formatNumber(carpentry_general.shipping_total)}`}
       </td>
       <td>
         <input
@@ -85,7 +86,7 @@ const CarpentryInput = ({ id, carpentry_general, remaining, projectsToSend,setPr
           checked={placementPaid}
           onChange={() => setPlacementPaid(!placementPaid)}
         />{" "}
-        {!carpentry_general.placement_paid && `$${carpentry_general.placement_total}`}{" "}
+        {!carpentry_general.placement_paid && `$${formatNumber(carpentry_general.placement_total)}`}{" "}
       </td>
     </tr>
   );

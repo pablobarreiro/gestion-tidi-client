@@ -1,13 +1,17 @@
 import Modal from "react-bootstrap/Modal";
 import useInput from "../hooks/useInput";
 import axios from "axios";
-import { ironWorkingUpdateTotals, ironWorkingNewInvoice, getProjectRoute, getAllProjectsRoute } from "../uris";
-import { useSelector } from "react-redux";
+import { ironWorkingUpdateTotals, ironWorkingNewInvoice } from "../uris";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { isValidDate } from "../utils/functions";
+import { getAdminProject } from "../state/project";
+import { getAllAdminProjects } from "../state/allProjects";
+import { useEffect } from "react";
 
 const IronWorkingLoadModal = ({ show, closeModal }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const project = useSelector((state) => state.project);
   const amount = useInput(0);
   const adjust = useInput(project.iron_working_general.adjust ?? 0);
@@ -20,8 +24,14 @@ const IronWorkingLoadModal = ({ show, closeModal }) => {
     { value: "Monto", input: amount, type: 'number' },
   ];
 
-  const handleSubmitLoad = async () => {
+  useEffect(()=> {
+    if(amount.value < 0) amount.setvalue(0)
+    if(adjust.value < 0) adjust.setvalue(0)
+  }, [amount.value, adjust.value])
+
+  const handleSubmitLoad = async (e) => {
     try {
+      e.preventDefault()
       navigate("/loading");
       if(adjust.value !== project.iron_working_general.adjust) {
         await axios.put(ironWorkingUpdateTotals(project.id), {
@@ -44,8 +54,8 @@ const IronWorkingLoadModal = ({ show, closeModal }) => {
           return alert('Completar los 3 campos para cargar la factura')
         } 
       }
-      await axios.get(getProjectRoute(project.id));
-      await axios.get(getAllProjectsRoute());
+      dispatch(getAdminProject(project.id));
+      dispatch(getAllAdminProjects());
       navigate(`/project/${project.id}`);
       closeModal();
     } catch(err) {
@@ -60,21 +70,23 @@ const IronWorkingLoadModal = ({ show, closeModal }) => {
           <Modal.Title>{show}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ul>
-            {list.map((item) => (
-              <li key={item.value}>
-                {item.value} : {item.type==='number' && '$'} {" "}
-                <input className="basic-input" placeholder={item.type==='date' ? 'AAAA/MM/DD': ''} {...item.input} />{" "}
-              </li>
-            ))}
-            <hr/>
-            <p>
-            Ajuste : $ <input className="basic-input" {...adjust} />{" "}
-            </p>
-          </ul>
+          <form id="load-iron-working" onSubmit={handleSubmitLoad}>
+            <ul>
+              {list.map((item) => (
+                <li key={item.value}>
+                  {item.value} : {item.type==='number' && '$'} {" "}
+                  <input className="basic-input" type={item.type==='date' ? 'date' : item.type==='number' ? 'number' : 'text'} placeholder={item.type==='date' ? 'AAAA/MM/DD': ''} {...item.input} />{" "}
+                </li>
+              ))}
+              <hr/>
+              <p>
+              Ajuste : $ <input className="basic-input" {...adjust} />{" "}
+              </p>
+            </ul>
+          </form>
         </Modal.Body>
         <Modal.Footer>
-          <button className='main-button' onClick={handleSubmitLoad}>Cargar</button>
+          <button className='main-button' type="submit" form="load-iron-working">Cargar</button>
           <button className='main-button' onClick={closeModal}>Cancelar</button>
         </Modal.Footer>
       </Modal>

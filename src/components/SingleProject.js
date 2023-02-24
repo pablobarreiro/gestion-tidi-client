@@ -2,7 +2,7 @@ import Grid from "../commons/Grid";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getProject } from "../state/project";
+import { getAdminProject, getProject } from "../state/project";
 import DetailsModal from "../commons/DetailsModal";
 import CarpentryLoadModal from "./CarpentryLoadModal";
 import IronWorkingLoadModal from "./IronWorkingLoadModal";
@@ -14,6 +14,9 @@ import LightPayModal from "./LightPayModal";
 import MarblePayModal from "./MarblePayModal";
 import IncomeLoadModal from "./IncomeLoadModal";
 import IncomePayModal from "./IncomePayModal";
+import { getBudget } from "../state/budget";
+import axios from "axios";
+import { editProjectRoute } from "../uris";
 
 const SingleProject = () => {
   const navigate = useNavigate();
@@ -24,6 +27,9 @@ const SingleProject = () => {
   const { projectId } = useParams();
   const project = useSelector((state) => state.project);
   const user = useSelector((state) => state.user);
+  const budget = useSelector((state) => state.budget)
+
+  console.log("PROJECT", project)
 
   const showStates = {
     payCarp: "Carpinteria - Pagar parciales",
@@ -45,10 +51,8 @@ const SingleProject = () => {
   
   useEffect(() => {
     if (!user) navigate("/login");
-  }, [projectId]);
-
-  useEffect(() => {
-    dispatch(getProject(projectId));
+      dispatch(user.is_admin ? getAdminProject(projectId) : getProject(projectId))
+      dispatch(getBudget(projectId))
   }, [projectId]);
 
   const [detailsInfo, setDetailsInfo] = useState([]);
@@ -91,9 +95,8 @@ const SingleProject = () => {
     }
   }, [showDetails]);
 
-  const categories = !project
-    ? []
-    : [
+  const categories = JSON.parse(localStorage.getItem('user_values')).is_admin && project
+    ? [
         {
           title: "Carpinteria",
           ...project.carpentry_general,
@@ -105,8 +108,7 @@ const SingleProject = () => {
           payOnClick: () => setShowPay(showStates.payCarp),
           loadOnClick: () => setShowLoad(showStates.loadCarp),
           detailsOnClick: () => setShowDetails(showStates.detailsCarp),
-        },
-        {
+        },{
           title: "Herrajes",
           ...project.iron_working_general,
           outcomes: project.iron_working_outcomes,
@@ -129,30 +131,33 @@ const SingleProject = () => {
           payOnClick: () => setShowPay(showStates.payIron),
           loadOnClick: () => setShowLoad(showStates.loadIron),
           detailsOnClick: () => setShowDetails(showStates.detailsIron),
-        },
-        {
+        },{
           title: "Iluminacion",
           ...project.light_general,
           outcomes: project.light_outcomes,
           total: project.light_outcomes.reduce(
-            (ac, cv) => (cv.amount ? ac + cv.amount : ac + 0),
+            (ac, cv) => (ac + cv.amount + 0),
             0
           ),
           remaining:
-            project.light_outcomes.reduce(
-              (ac, cv) => (cv.amount ? ac + cv.amount : ac + 0),
-              0
-            ) +
-            project.light_general.adjust -
-            project.light_outcomes.reduce(
-              (ac, cv) => (cv.paid ? ac + cv.amount : ac + 0),
-              0
-            ),
+          project.light_outcomes.reduce(
+            (ac, cv) => (cv.amount ? ac + cv.amount : ac + 0),
+            0
+          ) +
+          (!project.light_general.adjust_paid
+            ? project.light_general.adjust
+            : 0) +
+          (!project.light_general.placement_paid
+            ? project.light_general.placement_total
+            : 0) -
+          project.light_outcomes.reduce(
+            (ac, cv) => (cv.paid ? ac + cv.amount : ac + 0),
+            0
+          ),
           payOnClick: () => setShowPay(showStates.payLights),
           loadOnClick: () => setShowLoad(showStates.loadLights),
           detailsOnClick: () => setShowDetails(showStates.detailsLights),
-        },
-        {
+        },{
           title: "Marmol",
           ...project.marble_general,
           outcomes: project.marble_outcomes,
@@ -163,41 +168,58 @@ const SingleProject = () => {
           payOnClick: () => setShowPay(showStates.payMarble),
           loadOnClick: () => setShowLoad(showStates.loadMarble),
           detailsOnClick: () => setShowDetails(showStates.detailsMarble),
-        },
-  ];
+        },{
+          title: "Cobros",
+          ...project.income_total,
+          outcomes: project.income_partials,
+          remaining:
+            project.income_total.total +
+            project.income_total.adjust -
+            project.income_partials.reduce((ac, cv) => ac + cv.amount, 0),
+          loadOnClick: () => setShowLoad(showStates.loadIncome),
+          payOnClick: () => setShowPay(showStates.payIncome),
+          detailsOnClick: () => setShowDetails(showStates.detailsIncome),
+      }
+  ] : []
+
+  useEffect(()=> {
+    const updatePaymentFulfilled = async ()=> {
+      if(project) {
+        if(project.carpentry_general) {
+          if(!categories[0].remaining && !categories[1].remaining && !categories[2].remaining && !categories[3].remaining && !categories[4].remaining) {
+            if(project.carpentry_general.placement_paid && project.carpentry_general.shipping_paid && project.light_general.placement_paid && project.marble_general.placement_paid) {
+              if(!project.payment_fulfilled) {
+                await axios.put(editProjectRoute(projectId),{payment_fulfilled:true})
+                dispatch(getAdminProject(projectId))
+              }
+            }
+          } else if(categories[0].remaining || categories[1].remaining || categories[2].remaining || categories[3].remaining || categories[4].remaining) {
+            if(!project.carpentry_general.placement_paid || !project.carpentry_general.shipping_paid || !project.light_general.placement_paid || !project.marble_general.placement_paid) {
+              if(project.payment_fulfilled) {
+                await axios.put(editProjectRoute(projectId),{payment_fulfilled:false})
+                dispatch(getAdminProject(projectId))
+              }
+            }
+          }
+        }
+      }
+    }
+    updatePaymentFulfilled()
+  })
   
-  const budgetData = !project 
-  ? {} 
-  : {
-      ...project.budget,
-      total: project.budget.carpentry+ project.budget.iron_working+ project.budget.light+ project.budget.marble
-  }
-
-  const incomeData = !project
-    ? {}
-    : {
-      ...project.income_total,
-      payments: project.income_partials,
-      remaining:
-        project.income_total.total +
-        project.income_total.adjust -
-        project.income_partials.reduce((ac, cv) => ac + cv.amount, 0),
-
-      loadOnClick: () => setShowLoad("Ingresos - Cargar Total/Ajustes"),
-      payOnClick: () => setShowPay("Ingresos - Cobros parciales"),
-      detailsOnClick: () => setShowDetails("Ingresos - Detalles"),
-  };
+  const budgetData = !budget ? {} : {...budget}
 
   const closeModal = () => {
     setShowPay("");
     setShowLoad("");
     setShowDetails("");
   };
+
   if (!localStorage.getItem('user_values')) return <></>
 
   return (
     <>
-      <Grid categories={categories} incomeData={incomeData} budgetData={budgetData} />
+      <Grid categories={categories} budgetData={budgetData} />
       {showLoad === showStates.loadCarp && (
         <CarpentryLoadModal show={showLoad} closeModal={closeModal} />
       )}
