@@ -8,7 +8,7 @@
 .max-container2 {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 100px);
+    /* min-height: calc(100vh - 100px); */
     justify-content: flex-start;
 }
 
@@ -19,6 +19,11 @@
 
 .footer-container {
     height: 100px;
+    width: 100%;
+    background-color: white;
+    position: relative;
+    right: 0;
+    bottom: 0;
 }
 
 .grid-container {
