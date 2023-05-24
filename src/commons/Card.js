@@ -31,7 +31,7 @@ const Card = ({
       </div>
       <div className="card-buttons">
         {loadOnClick && <button className="main-button" onClick={loadOnClick}>Cargar</button>}
-        {payOnClick && <button className="main-button" onClick={payOnClick}>{title==="Cobros"? 'Cobrar': 'Pagar'}</button>}
+        {payOnClick && <button className="main-button" onClick={payOnClick}>{title==="Ingresos"? 'Cobrar': 'Pagar'}</button>}
         {detailsOnClick && <button className="main-button" onClick={detailsOnClick}>Ver detalles</button>}
       </div>
     </div>

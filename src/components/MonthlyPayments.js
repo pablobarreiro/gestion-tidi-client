@@ -66,11 +66,14 @@ const MonthlyPayments = ({ JSONMonth }) => {
   },[month.value,selectedCategoryInput.value, categorySelector.value])
 
   if (!month.value) return <></>;
-  if (!filteredPayments.length) return <p>No hay gastos cargados este mes</p>;
   return <>
   <select {...categorySelector} className='report-selector'>
     {categoryOptions.map(option => <option key={option}>{option}</option>)}
   </select>
+  {!filteredPayments.length 
+  ? 
+  <p>No hay gastos cargados este mes</p> 
+  :
   <Table striped bordered className="report-table">
         <thead>
           <tr>
@@ -102,7 +105,7 @@ const MonthlyPayments = ({ JSONMonth }) => {
             </td>
           </tr>
         </tbody>
-      </Table>
+      </Table>}
   </>;
 };
 

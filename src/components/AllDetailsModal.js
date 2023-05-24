@@ -77,8 +77,6 @@ const AllDetailsModal = ({ show, closeModal, headlines, detailsInfo }) => {
     });
   });
 
-  console.log(table)
-
   return (
     <Modal
       show={show}

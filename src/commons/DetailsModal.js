@@ -7,6 +7,7 @@ import swal from "sweetalert";
 import { getAdminProject } from "../state/project";
 import { carpentryDeleteOutcome, deletePayment, ironWorkingDeleteOutcome, lightDeleteOutcome, marbleDeleteOutcome } from "../uris";
 import { formatNumber } from "../utils/functions";
+import { editProjectRoute } from "../uris";
 
 const DetailsModal = ({ show, closeModal, headlines, detailsInfo }) => {
   const dispatch = useDispatch()
@@ -41,6 +42,7 @@ const DetailsModal = ({ show, closeModal, headlines, detailsInfo }) => {
           await axios.delete(deletePayment(data.id))
           break
         }
+      await axios.put(editProjectRoute(projectId),{payment_fulfilled:false})
       dispatch(getAdminProject(projectId))
       closeModal()
     }

@@ -16,6 +16,7 @@ const Profile = () => {
   const newPassword = useInput("");
   const confirmNewPassword = useInput("");
   const [editUsername, setEditUsername] = useState(false);
+  const [editPassword,setEditPassword] = useState(false);
 
   const usernameInput = useInput(user.username);
   const passwordInput = useInput("");
@@ -35,6 +36,7 @@ const Profile = () => {
       icon: response.correct ? "success" : "error",
     });
     if (response.correct) navigate("/general");
+    setEditPassword(false)
   };
 
   const handleChangeUsername = async (e) => {
@@ -70,21 +72,27 @@ const Profile = () => {
           onSubmit={handleChangeUsername}
         >
           <h5>{!editUsername ? 'Usuario: ' : 'Nuevo nombre de usuario'}</h5>{" "}
-          <p>{!editUsername ? user.username : <input {...usernameInput} />}</p>{" "}
+          <p style={{textTransform:"capitalize"}}>{!editUsername ? user.username : <input {...usernameInput} />}</p>{" "}
           {editUsername && (
             <h5>
               Contraseña:{" "}
               <p>
-                <input {...passwordInput} />
+                <input type="password" {...passwordInput} />
               </p>
             </h5>
           )}{" "}
           {!editUsername && (
-            <FaPen size={18} onClick={() => setEditUsername(true)} />
+            <FaPen 
+            style={{cursor:'pointer'}} 
+            size={18} 
+            onClick={() => {
+              setEditUsername(true);
+              setEditPassword(false)
+            }} />
           )}
           {editUsername && (
             <div>
-              <button className="main-button">Aceptar</button>
+              <button type="submit" className="main-button">Aceptar</button>
               <button
                 className="main-button"
                 onClick={() => setEditUsername(false)}
@@ -96,8 +104,19 @@ const Profile = () => {
         </form>
       </div>
       <div>
-        <h3>Cambiar Contraseña</h3>
-        <form onSubmit={handleChangePassword}>
+        <div style={{display:"flex"}}>
+        <h5>Cambiar Contraseña</h5>
+        {!editPassword && (
+            <FaPen 
+            style={{cursor:'pointer'}} 
+            size={18} 
+            onClick={() => {
+              setEditPassword(true)
+              setEditUsername(false);
+            }} />
+          )}
+        </div>
+        {editPassword && <form onSubmit={handleChangePassword}>
           <p>
             Contraseña anterior: <input type="password" {...oldPassword} />
           </p>
@@ -108,8 +127,9 @@ const Profile = () => {
             Confirmar nueva contraseña:{" "}
             <input type="password" {...confirmNewPassword} />
           </p>
-          <button className="main-button">Aceptar</button>
-        </form>
+          <button type="submit" className="main-button">Aceptar</button>
+          <button className="main-button" onClick={()=>setEditPassword(false)}>Cancelar</button>
+        </form>}
       </div>
     </>
   );

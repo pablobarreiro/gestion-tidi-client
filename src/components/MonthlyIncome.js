@@ -77,7 +77,7 @@ const MonthlyIncome = ({ JSONMonth }) => {
         </tbody>
       </Table>
       :
-      <p>No hay cobros para mostrar</p>
+      <p>No hay cobros para mostrar este mes</p>
       }
     </>
   );

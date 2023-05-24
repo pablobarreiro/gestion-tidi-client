@@ -169,7 +169,7 @@ const SingleProject = () => {
           loadOnClick: () => setShowLoad(showStates.loadMarble),
           detailsOnClick: () => setShowDetails(showStates.detailsMarble),
         },{
-          title: "Cobros",
+          title: "Ingresos",
           ...project.income_total,
           outcomes: project.income_partials,
           remaining:

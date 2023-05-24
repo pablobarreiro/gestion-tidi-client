@@ -49,7 +49,6 @@ const LightPayModal = ({ show, closeModal }) => {
       await axios.put(lightUpdateTotals(projectId), {
         adjust_paid: adjustPaid,
       });
-      console.log(placementPaid)
     if (placementPaid !== light_general.placement_paid)
       await axios.put(lightUpdateTotals(projectId), {
         placement_paid: placementPaid,

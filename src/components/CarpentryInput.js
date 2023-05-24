@@ -29,18 +29,22 @@ const CarpentryInput = ({ id, carpentry_general, remaining, projectsToSend,setPr
     const index = shippingToPay.findIndex((project)=> project.projectId===id)
     let shippingList = [...shippingToPay]
     if(shippingPaid) {
-      if(index >=0) {
-        shippingList[index] = {projectId:id,shipping_total:carpentry_general.shipping_total,shipping_paid:true}
-        setShippingToPay([...shippingList])
-      } else {
-        setShippingToPay([...shippingToPay,{projectId:id,shipping_total:carpentry_general.shipping_total,shipping_paid:true}])
+      if(!carpentry_general.shipping_paid) {
+        if(index >=0) {
+          shippingList[index] = {projectId:id,shipping_total:carpentry_general.shipping_total,shipping_paid:true}
+          setShippingToPay([...shippingList])
+        } else {
+          setShippingToPay([...shippingToPay,{projectId:id,shipping_total:carpentry_general.shipping_total,shipping_paid:true}])
+        }
       }
     } else {
-      if(index >=0) {
-        shippingList[index] = {projectId:id,shipping_total:carpentry_general.shipping_total,shipping_paid:false}
-        setShippingToPay([...shippingList])
-      } else {
-        setShippingToPay([...shippingToPay,{projectId:id,shipping_total:carpentry_general.shipping_total,shipping_paid:false}])
+      if(carpentry_general.shipping_paid) {
+        if(index >=0) {
+          shippingList[index] = {projectId:id,shipping_total:carpentry_general.shipping_total,shipping_paid:false}
+          setShippingToPay([...shippingList])
+        } else {
+          setShippingToPay([...shippingToPay,{projectId:id,shipping_total:carpentry_general.shipping_total,shipping_paid:false}])
+        }
       }
     } 
   },[shippingPaid])
@@ -49,18 +53,22 @@ const CarpentryInput = ({ id, carpentry_general, remaining, projectsToSend,setPr
     const index = placementToPay.findIndex((project)=> project.projectId===id)
     let placementList = [...placementToPay]
     if(placementPaid) {
-      if(placementToPay.find((project)=> project.projectId===id)) {
-        placementList[index] = {projectId:id,placement_total:carpentry_general.placement_total,placement_paid:true}
-        setPlacementToPay([...placementList])
-      } else {
-        setPlacementToPay([...placementToPay,{projectId:id,placement_total:carpentry_general.placement_total,placement_paid:true}])
+      if(!carpentry_general.placement_paid) {
+        if(placementToPay.find((project)=> project.projectId===id)) {
+          placementList[index] = {projectId:id,placement_total:carpentry_general.placement_total,placement_paid:true}
+          setPlacementToPay([...placementList])
+        } else {
+          setPlacementToPay([...placementToPay,{projectId:id,placement_total:carpentry_general.placement_total,placement_paid:true}])
+        }
       }
     } else {
-      if(placementToPay.find((project)=> project.projectId===id)) {
-        placementList[index] = {projectId:id,placement_total:carpentry_general.placement_total,placement_paid:false}
-        setPlacementToPay([...placementList])
-      } else {
-        setPlacementToPay([...placementToPay,{projectId:id,placement_total:carpentry_general.placement_total,placement_paid:false}])
+      if(carpentry_general.placement_paid) {
+        if(placementToPay.find((project)=> project.projectId===id)) {
+          placementList[index] = {projectId:id,placement_total:carpentry_general.placement_total,placement_paid:false}
+          setPlacementToPay([...placementList])
+        } else {
+          setPlacementToPay([...placementToPay,{projectId:id,placement_total:carpentry_general.placement_total,placement_paid:false}])
+        }
       }
     }
   },[placementPaid])
