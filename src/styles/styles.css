@@ -8,19 +8,35 @@
 .max-container2 {
     display: flex;
     flex-direction: column;
+    min-height: calc(100vh - 100px);
     justify-content: flex-start;
+}
+
+.navbar-container {
+    border-bottom: solid 1px black;
+    box-shadow: 0px 5px 5px #999999;
+}
+
+.footer-container {
+    height: 100px;
 }
 
 .grid-container {
     width: 100%;
+    min-height: calc(100vh - 150px);
     display: flex;
+    border-bottom: solid 1px #111111;
 }
 
 .sidebar-container {
-    margin-left: 10px;
     width: 25%;
-    /* border-right: solid 1px black; */
+    border-right: solid 1px #111111;
     box-shadow: 5px 0px 5px #999999;
+}
+
+.sidebar-body {
+    margin-top: 5px;
+    margin-left: 10px;
 }
 
 .main-grid {
@@ -38,14 +54,14 @@
     padding: 5px;
     margin:1%;
 }
-
+/* 
 .card-income-container {
     min-height: 30vh;
     border:1px black solid;
     border-radius: 7px;
     padding: 5px;
     margin:1%;
-}
+} */
 
 .card-buttons {
     display: flex;
@@ -53,11 +69,20 @@
 }
 
 .paid {
-    background-color: #74a077;
+    text-decoration: none;
+    color:#74a077
+}
+.paid-aux {
+    text-decoration: none;
+    color: black;
+}
+.text-common {
+    text-decoration: none;
 }
 
 .not-paid {
-    background-color: #ee3838;
+    text-decoration: none;
+    color:#ee3838;
 }
 
 .income-columns {
@@ -118,11 +143,6 @@
     max-width: 75%;
 }
 
-.navbar-container {
-    border-bottom: solid 1px black;
-    box-shadow: 0px 5px 5px #999999;
-    margin-bottom: 5px;
-}
 
 .break {
     width: 100%;
@@ -132,4 +152,15 @@
 
 .icon-button {
     cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .card-container {
+        width: 90%;
+        min-height: 35vh;
+        border:1px black solid;
+        border-radius: 7px;
+        padding: 5px;
+        margin:1%;
+    }
 }

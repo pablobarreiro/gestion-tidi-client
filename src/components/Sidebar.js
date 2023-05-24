@@ -28,29 +28,33 @@ const Sidebar = () => {
 
   if(URL === '/general') return (
     <div className="sidebar-container">
-      <h5>Proyectos en ejecucion</h5>
-      {allProjects && incompletedProjects.map((project, i) => {
-        return <p key={i}>TM-{project.id} - {project.name} <button className='main-button' onClick={()=>{navigate(`/project/${project.id}`)}}>Ver</button></p>
-      })}
-      <h5>Proyectos finalizados {showEnded ? <FaMinus className='icon-button' onClick={()=>setShowEnded(false)} /> : <FaPlus className='icon-button' onClick={()=>setShowEnded(true)} />}</h5>
-      {allProjects && completedProjects.map((project, i) => {
-        return <p key={i}>TM-{project.id} - {project.name} <button className='main-button' onClick={()=>{navigate(`/project/${project.id}`)}}>Ver</button></p>
-      })}
+      <div className='sidebar-body'>
+        <h5>Proyectos en ejecucion</h5>
+        {allProjects && incompletedProjects.map((project, i) => {
+          return <p key={i}>TM-{project.id} - {project.name} <button className='main-button' onClick={()=>{navigate(`/project/${project.id}`)}}>Ver</button></p>
+        })}
+        <h5>Proyectos finalizados {showEnded ? <FaMinus className='icon-button' onClick={()=>setShowEnded(false)} /> : <FaPlus className='icon-button' onClick={()=>setShowEnded(true)} />}</h5>
+        {allProjects && completedProjects.map((project, i) => {
+          return <p key={i}>TM-{project.id} - {project.name} <button className='main-button' onClick={()=>{navigate(`/project/${project.id}`)}}>Ver</button></p>
+        })}
+      </div>
     </div>
   )
   if(selectedProject) return (
     <div className="sidebar-container">
-      {URL!=='/general' && <ProjectInfoModal show={show} setShow={setShow} projectInfo={selectedProject} action='edit' />}
-      <h3>TM-{selectedProject.id} { user.is_admin && <FaPencilAlt style={{cursor:'pointer'}} onClick={()=>setShow(true)}/>} </h3>
-      <p>Cliente: {selectedProject.name}</p>
-      {selectedProject.initial_date && <p>Inicio Proyecto: {selectedProject.initial_date.slice(0,10).replace(/-/g, "/")}</p>}
-      <p>E-mail: {selectedProject.email}</p>
-      <p>Telefono: {selectedProject.phone}</p>
-      <p>Direccion: {selectedProject.direction}</p>
-      <p>Vendedor: {selectedProject.salesman}</p>
-      <p>Asistencia: {selectedProject.sale_assistant}</p>
-      <p>Sucursal: {selectedProject.branch_office}</p>
-      <p>Estado: {selectedProject.internal_state}</p>
+      <div className='sidebar-body'>
+        {URL!=='/general' && <ProjectInfoModal show={show} setShow={setShow} projectInfo={selectedProject} action='edit' />}
+        <h3>TM-{selectedProject.id} { user.is_admin && <FaPencilAlt style={{cursor:'pointer'}} onClick={()=>setShow(true)}/>} </h3>
+        <p>Cliente: {selectedProject.name}</p>
+        {selectedProject.initial_date && <p>Inicio Proyecto: {selectedProject.initial_date.slice(0,10).replace(/-/g, "/")}</p>}
+        <p>E-mail: {selectedProject.email}</p>
+        <p>Telefono: {selectedProject.phone}</p>
+        <p>Direccion: {selectedProject.direction}</p>
+        <p>Vendedor: {selectedProject.salesman}</p>
+        <p>Asistencia: {selectedProject.sale_assistant}</p>
+        <p>Sucursal: {selectedProject.branch_office}</p>
+        <p>Estado: {selectedProject.internal_state}</p>
+      </div>
     </div>
   );
 };

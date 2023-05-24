@@ -23,11 +23,11 @@ const Card = ({
       <div className="card-content">
         <h3>{title}</h3>
         <p>Total: {showCollocation? 'USD': '$'} {formatNumber(total)}</p>
-        <p className={((title==="Herrajes" || title==="Iluminacion") && adjust !==0) ? adjust_paid ? "paid" : "not-paid":''}>Ajuste: {showCollocation? 'USD': '$'} {formatNumber(adjust)}</p>
-        <p className={!remaining ? "paid" : "not-paid"}>Saldo: {showCollocation? 'USD': '$'} {formatNumber(remaining)}</p>
-        {showTransport && <p className={shipping_paid ? "paid" : "not-paid"}>Envio: $ {formatNumber(shipping_total)}</p>}
-        {showInstalation && <p className={placement_paid ? "paid" : "not-paid"}>Instalacion: $ {formatNumber(placement_total)}</p>}
-        {showCollocation && <p className={placement_paid ? "paid" : "not-paid"}>Colocacion: $ {formatNumber(placement_total)}</p>}
+        <p>Ajuste: <u className={((title==="Herrajes" || title==="Iluminacion") && adjust !==0) ? adjust_paid ? "paid-aux" : "not-paid":'text-common'}>{showCollocation? 'USD': '$'} {formatNumber(adjust)}</u> {(((title==="Herrajes" || title==="Iluminacion") && adjust !==0) && adjust_paid) && <a className="paid">✓</a>} </p>
+        <p>Saldo: <u className={!remaining ? "paid-aux" : "not-paid"}> {showCollocation? 'USD': '$'} {formatNumber(remaining)}</u> {!remaining && <a className="paid">✓</a>} </p>
+        {showTransport && <p>Envio: <u className={shipping_paid ? "paid-aux" : "not-paid"}>$ {formatNumber(shipping_total)}</u> {shipping_paid && <a className="paid">✓</a>} </p>}
+        {showInstalation && <p>Instalacion: <u className={placement_paid ? "paid-aux" : "not-paid"}> $ {formatNumber(placement_total)}</u> {placement_paid && <a className="paid">✓</a>} </p>}
+        {showCollocation && <p>Colocacion: <u className={placement_paid ? "paid-aux" : "not-paid"}> $ {formatNumber(placement_total)}</u>  {placement_paid && <a className="paid">✓</a>} </p>}
       </div>
       <div className="card-buttons">
         {loadOnClick && <button className="main-button" onClick={loadOnClick}>Cargar</button>}

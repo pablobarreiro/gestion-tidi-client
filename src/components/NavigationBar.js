@@ -6,6 +6,10 @@ import ProjectInfoModal from "../commons/ProjectInfoModal";
 import { getUser } from "../state/user";
 import { clearProject } from "../state/project";
 import { clearAllProjects } from "../state/allProjects";
+import Navbar from "react-bootstrap/Navbar"
+import Nav from 'react-bootstrap/Nav';
+import { BsList } from "react-icons/bs"
+import { FaPencilAlt } from "react-icons/fa";
 
 const NavigationBar = () => {
   const dispatch = useDispatch();
@@ -34,22 +38,24 @@ const NavigationBar = () => {
   if (!user) return <></>;
 
   return (
-    <div className="navbar-container">
+    <Navbar expand="lg" className="navbar-container">
       {URL==='/general' && <ProjectInfoModal
         show={showNewProject}
         setShow={setShowNewProject}
         projectInfo={{}}
         action='create'
       />}
-      <h4
+      <h5
         style={{
+          width: "100%",
           display: "flex",
           justifyContent: "space-between",
-          padding: "5px 5px 0px 5px",
+          alignContent: "center",
+          padding: "0px 5px",
         }}
       >
         <div style={{display:'flex', alignItems:'center'}}>
-          <div style={{cursor:'pointer'}} onClick={()=>navigate("/general")}>TIDI</div>{" "}
+          <h4 style={{cursor:'pointer',margin:'0px'}} onClick={()=>navigate("/general")}>TIDI</h4>{" "}
           {URL!=='/general' && <button className="main-button" style={{marginLeft:'15px'}} onClick={() => navigate("/general")}>
             Volver
           </button>}{" "}
@@ -61,17 +67,21 @@ const NavigationBar = () => {
             Nuevo Proyecto
           </button>}{" "}
         </div>
-        <div style={{textTransform:'capitalize'}}>
-          {user.username } {" "}
-          {user.is_admin && <button className="main-button" onClick={()=>navigate('/reports')}>Reportes</button>}{" "}
-          {user.is_admin && <button className="main-button" onClick={()=>navigate('/editGenerals')}>Generales</button>}{" "}
-          <button className="main-button" onClick={()=>navigate('/profile')}>Mi Perfil</button>{" "}
-          <button onClick={handleLogout} className="main-button">
-            Logout
-          </button>{" "}
+        <div style={{display:'flex',flexDirection:'column'}}>
+        <Navbar.Toggle aria-controls="basic-navbar-nav">
+          <BsList size={24} />
+        </Navbar.Toggle>
+        <Navbar.Collapse id="basic-navbar-nav" style={{textTransform:'capitalize'}}>
+          <Nav>
+            <Nav.Link onClick={()=>navigate('/profile')}>{user.username} <FaPencilAlt /></Nav.Link>
+            <Nav.Link onClick={()=>navigate('/reports')}>Reportes</Nav.Link>
+            <Nav.Link onClick={()=>navigate('/editGenerals')}>Generales</Nav.Link>
+            <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
         </div>
-      </h4>
-    </div>
+      </h5>
+    </Navbar>
   );
 };
 
