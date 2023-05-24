@@ -74,8 +74,8 @@ const NavigationBar = () => {
         <Navbar.Collapse id="basic-navbar-nav" style={{textTransform:'capitalize'}}>
           <Nav>
             <Nav.Link onClick={()=>navigate('/profile')}>{user.username} <FaPencilAlt /></Nav.Link>
-            <Nav.Link onClick={()=>navigate('/reports')}>Reportes</Nav.Link>
-            <Nav.Link onClick={()=>navigate('/editGenerals')}>Generales</Nav.Link>
+            {user.is_admin && <Nav.Link onClick={()=>navigate('/reports')}>Reportes</Nav.Link>}
+            {user.is_admin && <Nav.Link onClick={()=>navigate('/editGenerals')}>Generales</Nav.Link>}
             <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
           </Nav>
         </Navbar.Collapse>

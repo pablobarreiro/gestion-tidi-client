@@ -152,7 +152,7 @@ const Home = () => {
     <>
       <div style={{display:'flex'}}>
         <Sidebar />
-        No hay nada para mostrar aca
+        
       </div>
     </>
   )

@@ -27,7 +27,7 @@ const Sidebar = () => {
   const [show,setShow] = useState(false)
 
   if(URL === '/general') return (
-    <div className="sidebar-container">
+    <div className={user.is_admin ? "sidebar-container" : ''}>
       <div className='sidebar-body'>
         <h5>Proyectos en ejecucion</h5>
         {allProjects && incompletedProjects.map((project, i) => {
